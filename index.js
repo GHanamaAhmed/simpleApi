@@ -8,7 +8,7 @@ const app = express();
 mongoose.set("strictQuery", false)
 const connectDB = async () => {
     try {
-        con = await mongoose.connect(process.env.MONGO_URI)
+         await mongoose.connect(process.env.MONGO_URI)
         console.log("Connect succssful");
     } catch (error) {
         console.log(error);
