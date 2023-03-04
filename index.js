@@ -10,7 +10,10 @@ app.use(bodyPparser.urlencoded({ extended: true }))
 app.post("/users/signup", async (req, res) => {
     const { value, error } = schemaUser.validate(req.body)
     if (error) {
-        res.json(error.message)
+        res.json({
+            res:false,
+            mes:error.message
+        })
 
     } else if ((await Users.find({ email: req.body.email })).length > 0) {
         res.json({
