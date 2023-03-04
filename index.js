@@ -3,7 +3,19 @@ const bodyPparser = require('body-parser');
 const { Users } = require('./database/database');
 const { schemaUser } = require('./validate/validate');
 const helmet = require('helmet');
+const mongoose = require('mongoose');
 const app = express();
+ mongoose.set("strictQuery",false)
+const connectDB=async ()=>{
+    try {
+        con=await mongoose.connect(process.env.MONGO_URI)
+        console.log("Connect succssful");
+    } catch (error) {
+        console.log(error);
+        process.exit(1)
+    }
+}
+
 const PORT = 8080;
 app.use(helmet())
 app.use(bodyPparser.urlencoded({ extended: true }))
@@ -30,5 +42,7 @@ app.post("/users/signup", async (req, res) => {
     }
 
 })
-app.listen(process.env.PORT || PORT)
+connectDB().then(()=>{
+    app.listen(process.env.PORT || PORT)
+})
 
