@@ -22,13 +22,14 @@ app.use(bodyPparser.urlencoded({ extended: true }))
 app.post("/users/signup", async (req, res) => {
     const { value, err } = schemaUser.validate(req.body)
     try {
+        let finduser=await Users.find({ email: req.body.email })
         if (err) {
             res.json({
                 res: false,
                 mes: err.message
             })
 
-        } else if ((await Users.find({ email: req.body.email })).length > 0) {
+        } else if (finduser.length > 0) {
             res.json({
                 res: false,
                 mes: "Email is exist!"
