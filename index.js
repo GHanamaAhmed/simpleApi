@@ -11,24 +11,21 @@ app.post("/users/signup", async (req, res) => {
     const { value, error } = schemaUser.validate(req.body)
     if (error) {
         res.json(error.message)
-       
-    }else if ((await Users.find({ email: req.body.email })).length>0) {
+
+    } else if ((await Users.find({ email: req.body.email })).length > 0) {
         res.json({
             res: false,
             mes: "Email is exist!"
         })
     } else {
         let user = new Users(req.body)
-       await user.save()
+        await user.save()
         res.json({
             res: true,
             mes: "Succeeful"
         })
     }
-    
+
 })
-app.get("/",(req,res)=>{
-    res.send("Hello")
-})
-app.listen(process.env.PORT||PORT)
+app.listen(process.env.PORT || PORT)
 
