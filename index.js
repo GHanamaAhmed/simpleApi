@@ -27,5 +27,8 @@ app.post("/users/signup", async (req, res) => {
     }
     
 })
+app.get("/",(req,res)=>{
+    res.send("Hello")
+})
 app.listen(process.env.PORT||PORT)
 
