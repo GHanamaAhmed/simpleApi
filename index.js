@@ -6,6 +6,9 @@ const helmet = require('helmet');
 const mongoose = require('mongoose');
 const app = express();
 const url = "mongodb://127.0.0.1:27017/mobile";
+const PORT = 8080;
+app.use(helmet())
+app.use(bodyPparser.urlencoded({ extended: true }))
 mongoose.set("strictQuery", false)
 const connectDB = async () => {
     try {
@@ -21,16 +24,12 @@ const connectDB = async () => {
         }
     }
 }
-
-const PORT = 8080;
-app.use(helmet())
-app.use(bodyPparser.urlencoded({ extended: true }))
 app.post("/users/signup", async (req, res) => {
-    const { value, err } = schemaSignup.validate(req.body)
-    if (err) {
+    const { value, error } = schemaSignup.validate(req.body)
+    if (error) {
         res.json({
             res: false,
-            mes: err.message
+            mes: error.message
         })
 
     } else {
@@ -49,18 +48,18 @@ app.post("/users/signup", async (req, res) => {
                     mes: "Succeeful"
                 })
             }
-        } catch (error) {
-            console.log(error);
+        } catch (err) {
+            console.log(err);
         }
     }
 
 })
 app.post("/users/signin", async (req, res) => {
-    const { value, err } = schemaSignin.validate(req.body)
-    if (err) {
+    const { value, error } = schemaSignin.validate(req.body)
+    if (error) {
         res.json({
             res: false,
-            mes: err.message
+            mes: error.message
         })
     } else {
         try {
@@ -84,8 +83,8 @@ app.post("/users/signin", async (req, res) => {
                     mes: "Email not exist!"
                 })
             }
-        } catch (error) {
-            console.log(error);
+        } catch (err) {
+            console.log(err);
         }
     }
 
