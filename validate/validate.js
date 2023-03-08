@@ -11,4 +11,9 @@ var schemaSignin=joi.object({
     email:joi.string().email().required(),
     password:joi.string().max(20).min(8).required()
 })
-module.exports={schemaSignup,schemaSignin}
+var schemaSpecialist=joi.object({
+    faculte:joi.string().required(),
+    department:joi.string().required(),
+    specialist:joi.string().required()
+})
+module.exports={schemaSignup,schemaSignin,schemaSpecialist}

@@ -3,6 +3,7 @@ const bodyPparser = require('body-parser');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 const { usersRouter } = require('./routes/users');
+const { specialistesRouter } = require('./routes/specialistes');
 mongoose.set("strictQuery", false)
 const app = express();
 const url = "mongodb://127.0.0.1:27017/mobile";
@@ -13,6 +14,7 @@ const PORT = 8080;
 app.use(helmet())
 app.use(bodyPparser.urlencoded({ extended: true }))
 app.use("/users",usersRouter)
+app.use("/specialist",specialistesRouter)
 //connect with DB
 const connectDB = async () => {
     try {

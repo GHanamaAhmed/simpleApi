@@ -19,4 +19,20 @@ const Users = mongoose.model("users", new mongoose.Schema({
         required: true
     },
 }))
-module.exports = { Users }
+const Specialist=mongoose.model("specialistes",new mongoose.Schema(
+    {
+        faculte:{
+            type:String,
+            required:true
+        },
+        department:{
+            type:String,
+            required:true
+        },
+        specialist:{
+            type:String,
+            required:true
+        }
+    }
+))
+module.exports = { Users, Specialist}
