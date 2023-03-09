@@ -101,16 +101,10 @@ usersRouter.post("/auth", async (req, res) => {
     } else {
         try {
             let finduser = await Users.find({ email: req.body.email })
-            let findauth = await EmailVerification.find({ email: req.body.email })
             if (finduser.length > 0) {
                 res.json({
                     res: false,
                     mes: "Email is exist!"
-                })
-            } else if (findauth.length > 0) {
-                res.json({
-                    res: false,
-                    mes: "code posted"
                 })
             } else {
                 let transport = nodemailer.createTransport({
