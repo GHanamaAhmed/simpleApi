@@ -34,33 +34,31 @@ specialistesRouter.post("/add", async (req, res) => {
 specialistesRouter.get("/", async (req, res) => {
     let { f, d, s } = req.query
     try {
-        let sp ;
-        if (f!=null&&d!=null&&s!=null) {
-            sp=await Specialist.find({faculte:f,department: d, specialist: s })
-        }else if (f==null&&d!=null&&s!=null) {
-            sp=await Specialist.find({department: d, specialist: s})
-        }else if (f!=null&&d==null&&s!=null) {
-            sp=await Specialist.find({faculte: f, specialist: s })
-        }else if (f!=null&&d!=null&&s==null) {
-            sp=await Specialist.find({faculte: f, department: d })
-        }else if (f!=null&&d==null&&s==null) {
-            sp=await Specialist.find({faculte: f })
-        }else if (f==null&&d!=null&&s==null) {
-            sp=await Specialist.find({department: d })
-        }else if (f==null&&d==null&&s!=null) {
-            sp=await Specialist.find({specialist: s })
-        }else{
-            sp=await Specialist.find({})
+        let sp;
+        if (f != null && d != null && s != null) {
+            sp = await Specialist.find({ faculte: f, department: d, specialist: s })
+        } else if (f == null && d != null && s != null) {
+            sp = await Specialist.find({ department: d, specialist: s })
+        } else if (f != null && d == null && s != null) {
+            sp = await Specialist.find({ faculte: f, specialist: s })
+        } else if (f != null && d != null && s == null) {
+            sp = await Specialist.find({ faculte: f, department: d })
+        } else if (f != null && d == null && s == null) {
+            sp = await Specialist.find({ faculte: f })
+        } else if (f == null && d != null && s == null) {
+            sp = await Specialist.find({ department: d })
+        } else if (f == null && d == null && s != null) {
+            sp = await Specialist.find({ specialist: s })
+        } else {
+            sp = await Specialist.find({})
         }
         console.log(sp);
         res.json(
             sp
         )
-        
     } catch (error) {
         console.log(error);
     }
-
 })
 module.exports = {
     specialistesRouter
