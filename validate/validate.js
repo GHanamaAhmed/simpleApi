@@ -6,6 +6,8 @@ var schemaSignup=joi.object({
     email:joi.string().email().required(),
     password:joi.string().max(20).min(8).required(),
     code:joi.number().required(),
+    sex:joi.string().valid('Male', 'Female').required(),
+    type:joi.string().valid('Student', 'Teacher').required(),
     faculte: joi.string().required(),
     department : joi.string().required(),
     specialist : joi.string().required(),
