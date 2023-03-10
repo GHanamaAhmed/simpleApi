@@ -52,7 +52,6 @@ specialistesRouter.get("/", async (req, res) => {
         } else {
             sp = await Specialist.find({})
         }
-        console.log(sp);
         res.json(
             sp
         )

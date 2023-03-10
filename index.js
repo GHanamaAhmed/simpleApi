@@ -2,7 +2,8 @@ const express = require('express');
 const bodyPparser = require('body-parser');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
-const { usersRouter } = require('./routes/users');
+const { studentRouter } = require('./routes/student');
+const {teacherRouter} = require('./routes/teacher');
 const { specialistesRouter } = require('./routes/specialistes');
 mongoose.set("strictQuery", false)
 const app = express();
@@ -13,7 +14,8 @@ const PORT = 8080;
 //middleware
 app.use(helmet())
 app.use(bodyPparser.urlencoded({ extended: true }))
-app.use("/users",usersRouter)
+app.use("/student",studentRouter)
+app.use("/teacher",teacherRouter)
 app.use("/specialist",specialistesRouter)
 //connect with DB
 const connectDB = async () => {

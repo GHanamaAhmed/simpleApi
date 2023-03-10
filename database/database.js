@@ -1,16 +1,12 @@
 const mongoose = require('mongoose');
 
-//Schema DB for users
-const Users = mongoose.model("users", new mongoose.Schema({
+//Schema DB for Student
+const Student = mongoose.model("student", new mongoose.Schema({
     firstname: {
         type: String,
         required: true
     },
     lastname: {
-        type: String,
-        required: true
-    },
-    type: {
         type: String,
         required: true
     },
@@ -38,6 +34,33 @@ const Users = mongoose.model("users", new mongoose.Schema({
         required: true
     },
     year :{
+        type: String,
+        required: true
+    },
+}))
+//Schema DB for users
+const Teacher = mongoose.model("teacher", new mongoose.Schema({
+    firstname: {
+        type: String,
+        required: true
+    },
+    lastname: {
+        type: String,
+        required: true
+    },
+    sex:{
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    specialist :{
         type: String,
         required: true
     },
@@ -70,4 +93,4 @@ const EmailVerification=mongoose.model("emailv",new mongoose.Schema(
         }
     }
 ))
-module.exports = { Users, Specialist,EmailVerification}
+module.exports = { Student,Teacher, Specialist,EmailVerification}

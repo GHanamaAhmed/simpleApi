@@ -1,12 +1,11 @@
-const usersRouter = require('express').Router();
-const { required } = require('joi');
-const { Users, EmailVerification } = require('../database/database');
-const { schemaSignin, schemaSignup, schemaauth } = require('../validate/validate');
+const studentRouter = require('express').Router();
+const { Student,Teacher, EmailVerification } = require('../database/database');
+const { schemaSignin,schemaStudent,schemaTeacher , schemaauth } = require('../validate/validate');
 const nodemailer = require("nodemailer")
 
-//Sign up
-usersRouter.post("/signup", async (req, res) => {
-    const { value, error } = schemaSignup.validate(req.body)
+//Sign up Student
+studentRouter.post("/signup", async (req, res) => {
+    const { value, error } = schemaStudent.validate(req.body)
     if (error) {
         res.json({
             res: false,
@@ -15,7 +14,7 @@ usersRouter.post("/signup", async (req, res) => {
 
     } else {
         try {
-            let finduser = await Users.find({ email: req.body.email })
+            let finduser = await Student.find({ email: req.body.email })
             if (finduser.length > 0) {
                 res.json({
                     res: false,
@@ -26,7 +25,7 @@ usersRouter.post("/signup", async (req, res) => {
                 if (finemil.length > 0) {
                     let auth = await EmailVerification.find({ email: req.body.email, code: req.body.code })
                     if (auth.length > 0) {
-                        let user = new Users(req.body)
+                        let user = new Student(req.body)
                         await user.save()
                         await EmailVerification.deleteOne({ email: req.body.email })
                         res.json({
@@ -53,8 +52,8 @@ usersRouter.post("/signup", async (req, res) => {
     }
 
 })
-//Sign in
-usersRouter.post("/signin", async (req, res) => {
+//Sign in Student
+studentRouter.post("/signin", async (req, res) => {
     const { value, error } = schemaSignin.validate(req.body)
     if (error) {
         res.json({
@@ -63,9 +62,9 @@ usersRouter.post("/signin", async (req, res) => {
         })
     } else {
         try {
-            let finduser = await Users.find({ email: req.body.email })
+            let finduser = await Student.find({ email: req.body.email })
             if (finduser.length > 0) {
-                let finduser1 = await Users.find({ email: req.body.email, password: req.body.password })
+                let finduser1 = await Student.find({ email: req.body.email, password: req.body.password })
                 if (finduser1.length > 0) {
                     res.json({
                         res: true,
@@ -89,8 +88,8 @@ usersRouter.post("/signin", async (req, res) => {
     }
 
 })
-//Auth
-usersRouter.post("/auth", async (req, res) => {
+//Auth Student
+studentRouter.post("/auth", async (req, res) => {
     const { value, error } = schemaauth.validate(req.body)
     if (error) {
         res.json({
@@ -100,7 +99,7 @@ usersRouter.post("/auth", async (req, res) => {
 
     } else {
         try {
-            let finduser = await Users.find({ email: req.body.email })
+            let finduser = await Student.find({ email: req.body.email })
             if (finduser.length > 0) {
                 res.json({
                     res: false,
@@ -142,8 +141,8 @@ usersRouter.post("/auth", async (req, res) => {
     }
 
 })
-//reAuth
-usersRouter.post("/reauth", async (req, res) => {
+//reAuth Student
+studentRouter.post("/reauth", async (req, res) => {
     const { value, error } = schemaauth.validate(req.body)
     if (error) {
         res.json({
@@ -152,7 +151,7 @@ usersRouter.post("/reauth", async (req, res) => {
         })
     } else {
         try {
-            let finduser = await Users.find({ email: req.body.email })
+            let finduser = await Student.find({ email: req.body.email })
             if (finduser.length > 0) {
                 res.json({
                     res: false,
@@ -194,4 +193,4 @@ usersRouter.post("/reauth", async (req, res) => {
 
 })
 
-module.exports = { usersRouter }
+module.exports = { studentRouter }
