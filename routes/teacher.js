@@ -48,7 +48,10 @@ teacherRouter.post("/signup", async (req, res) => {
 
             }
         } catch (err) {
-            console.log(err);
+            res.json({
+                res: false,
+                mes: err
+            })
         }
     }
 
@@ -84,7 +87,10 @@ teacherRouter.post("/signin", async (req, res) => {
                 })
             }
         } catch (err) {
-            console.log(err);
+            res.json({
+                res: false,
+                mes: err
+            })
         }
     }
 
@@ -128,6 +134,10 @@ teacherRouter.post("/auth", async (req, res) => {
                         console.log('Email sent: ' + info.response);
                     }
                 })
+                let userIsExist=EmailVerification.find({email:req.body.email})
+                if ((await userIsExist).length>0) {
+                    await EmailVerification.deleteOne({ email: req.body.email })
+                }
                 let user = new EmailVerification({ email: req.body.email, code: code })
                 await user.save()
                 res.json({
@@ -137,7 +147,10 @@ teacherRouter.post("/auth", async (req, res) => {
 
             }
         } catch (err) {
-            console.log(err);
+            res.json({
+                res: false,
+                mes: err
+            })
         }
     }
 
@@ -188,7 +201,10 @@ teacherRouter.post("/reauth", async (req, res) => {
 
             }
         } catch (err) {
-            console.log(err);
+            res.json({
+                res: false,
+                mes: err
+            })
         }
     }
 
