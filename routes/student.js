@@ -67,6 +67,7 @@ studentRouter.post("/signin", async (req, res) => {
     } else {
         try {
             let finduser = await Student.findOne({ email: req.body.email })
+            print(finduser);
             if (finduser == null) {
                 let finduser1 = await Student.findOne({ email: req.body.email, password: req.body.password })
                 if (finduser1 == null) {
