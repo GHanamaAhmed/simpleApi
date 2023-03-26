@@ -14,8 +14,8 @@ studentRouter.post("/signup", async (req, res) => {
         })
     } else {
         try {
-            let finduser = await Student.find({ email: req.body.email })
-            if (finduser.length > 0) {
+            let finduser = await Student.findOne({ email: req.body.email })
+            if (finduser == null) {
                 res.json({
                     res: false,
                     mes: "Email is exist!"
@@ -66,10 +66,10 @@ studentRouter.post("/signin", async (req, res) => {
         })
     } else {
         try {
-            let finduser = await Student.find({ email: req.body.email })
-            if (finduser.length > 0) {
-                let finduser1 = await Student.find({ email: req.body.email, password: req.body.password })
-                if (finduser1.length > 0) {
+            let finduser = await Student.findOne({ email: req.body.email })
+            if (finduser == null) {
+                let finduser1 = await Student.findOne({ email: req.body.email, password: req.body.password })
+                if (finduser1 == null) {
                     res.json({
                         res: true,
                         mes: "Sign in succssful",
