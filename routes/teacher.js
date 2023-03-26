@@ -1,7 +1,8 @@
 const teacherRouter = require('express').Router();
-const { Teacher, EmailVerification } = require('../database/database');
-const { schemaSignin,schemaStudent,schemaTeacher , schemaauth } = require('../validate/validate');
-const nodemailer = require("nodemailer")
+const { Teacher, EmailVerification, Room, Session } = require('../database/database');
+const { schemaSignin, schemaStudent, schemaTeacher, schemaauth } = require('../validate/validate');
+const nodemailer = require("nodemailer");
+const { date } = require('joi');
 
 
 //Sign up Teacher
@@ -31,7 +32,8 @@ teacherRouter.post("/signup", async (req, res) => {
                         await EmailVerification.deleteOne({ email: req.body.email })
                         res.json({
                             res: true,
-                            mes: "Succeeful"
+                            mes: "Succeeful",
+                            data: user
                         })
                     } else {
                         res.json({
@@ -68,11 +70,12 @@ teacherRouter.post("/signin", async (req, res) => {
         try {
             let finduser = await Teacher.find({ email: req.body.email })
             if (finduser.length > 0) {
-                let finduser1 = await Teacher.find({ email: req.body.email, password: req.body.password })
-                if (finduser1.length > 0) {
+                let finduser1 = await Teacher.findOne({ email: req.body.email, password: req.body.password })
+                if (finduser1 == 0) {
                     res.json({
                         res: true,
-                        mes: "Sign in succssful"
+                        mes: "Sign in succssful",
+                        data: finduser
                     })
                 } else {
                     res.json({
@@ -134,8 +137,8 @@ teacherRouter.post("/auth", async (req, res) => {
                         console.log('Email sent: ' + info.response);
                     }
                 })
-                let userIsExist=EmailVerification.find({email:req.body.email})
-                if ((await userIsExist).length>0) {
+                let userIsExist = EmailVerification.find({ email: req.body.email })
+                if ((await userIsExist).length > 0) {
                     await EmailVerification.deleteOne({ email: req.body.email })
                 }
                 let user = new EmailVerification({ email: req.body.email, code: code })
@@ -196,7 +199,7 @@ teacherRouter.post("/reauth", async (req, res) => {
                 await EmailVerification.updateOne({ email: req.body.email }, { $set: { code: code } })
                 res.json({
                     res: true,
-                    mes: "resend code: "+ code
+                    mes: "resend code: " + code
                 })
 
             }
@@ -209,5 +212,131 @@ teacherRouter.post("/reauth", async (req, res) => {
     }
 
 })
-
+teacherRouter.post("/info", async (req, res) => {
+    const { error, value } = schemaSignin.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        let findteacher = await Teacher.findOne({ email: req.body.email, password: req.body.password })
+        if (findteacher == null) {
+            res.json({
+                res: false,
+                mes: "Email or password not correct!"
+            })
+        } else {
+            res.json(findteacher)
+        }
+    }
+})
+teacherRouter.post("/createroom", async (req, res) => {
+    const { error, value } = schemaJoinRoom.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        let findTeacher = await Teacher.findOne({ email: req.body.email, password: req.body.password })
+        if (findTeacher == null) {
+            res.json({
+                res: false,
+                mes: "Email or password not correct!"
+            })
+        } else {
+            let room = await new Room(
+                {
+                    createAt: new Date().toLocaleString(),
+                    idTeacher: findTeacher.id,
+                    module: findTeacher.specialist,
+                    qrCode: req.body.qrcode
+                }
+            )
+            await room.save()
+            let session = await new Session(
+                {
+                    idRoom: room.id
+                }
+            )
+            await session.save()
+            res.json(
+                {
+                    res: true,
+                    mes: "Rom created successfully",
+                    data: room
+                }
+            )
+        }
+    }
+})
+teacherRouter.post("/stoproom", async (req, res) => {
+    const { error, value } = schemaJoinRoom.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        let findTeacher = await Teacher.findOne({ email: req.body.email, password: req.body.password })
+        if (findTeacher == null) {
+            res.json({
+                res: false,
+                mes: "Email or password not correct!"
+            })
+        } else {
+            let room = await Room.findOne({ qrCode: req.body.qrcode })
+            if (room == null) {
+                res.json(
+                    {
+                        res: false,
+                        mes: "This room not exist!"
+                    }
+                )
+            } else {
+                let session = await Session.findOne({ idRoom: room.id })
+                if (session == null) {
+                    res.json(
+                        {
+                            res: false,
+                            mes: "This session is ended"
+                        }
+                    )
+                } else {
+                    await Session.deleteOne({ idRoom: room.id })
+                    res.json({
+                        res: true,
+                        mes: "Session ended"
+                    })
+                }
+            }
+        }
+    }
+})
+teacherRouter.delete("/deletroom", async (req, res) => {
+    const { error, value } = schemaJoinRoom.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        let findTeacher = await Teacher.findOne({ email: req.body.email, password: req.body.password })
+        if (findTeacher == null) {
+            res.json({
+                res: false,
+                mes: "Email or password not correct!"
+            })
+        } else {
+            await Room.deleteOne({ qrCode: req.body.qrcode })
+            res.json(
+                {
+                    res: false,
+                    mes: "Deleted succssfully"
+                }
+            )
+        }
+    }
+})
 module.exports = { teacherRouter }

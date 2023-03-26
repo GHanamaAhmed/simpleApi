@@ -1,7 +1,8 @@
 const studentRouter = require('express').Router();
-const { Student,Teacher, EmailVerification } = require('../database/database');
-const { schemaSignin,schemaStudent,schemaTeacher , schemaauth } = require('../validate/validate');
-const nodemailer = require("nodemailer")
+const { Student, Teacher, EmailVerification, Session, Room, Attendance } = require('../database/database');
+const { schemaSignin, schemaStudent, schemaTeacher, schemaauth, schemaJoinRoom } = require('../validate/validate');
+const nodemailer = require("nodemailer");
+const { default: axios } = require('axios');
 
 //Sign up Student
 studentRouter.post("/signup", async (req, res) => {
@@ -11,7 +12,6 @@ studentRouter.post("/signup", async (req, res) => {
             res: false,
             mes: error.message
         })
-
     } else {
         try {
             let finduser = await Student.find({ email: req.body.email })
@@ -30,7 +30,8 @@ studentRouter.post("/signup", async (req, res) => {
                         await EmailVerification.deleteOne({ email: req.body.email })
                         res.json({
                             res: true,
-                            mes: "Succeeful"
+                            mes: "Succeeful",
+                            data:user
                         })
                     } else {
                         res.json({
@@ -71,7 +72,8 @@ studentRouter.post("/signin", async (req, res) => {
                 if (finduser1.length > 0) {
                     res.json({
                         res: true,
-                        mes: "Sign in succssful"
+                        mes: "Sign in succssful",
+                        data:finduser1
                     })
                 } else {
                     res.json({
@@ -133,8 +135,8 @@ studentRouter.post("/auth", async (req, res) => {
                         console.log('Email sent: ' + info.response);
                     }
                 })
-                let userIsExist=EmailVerification.find({email:req.body.email})
-                if ((await userIsExist).length>0) {
+                let userIsExist = EmailVerification.find({ email: req.body.email })
+                if ((await userIsExist).length > 0) {
                     await EmailVerification.deleteOne({ email: req.body.email })
                 }
                 let user = new EmailVerification({ email: req.body.email, code: code })
@@ -195,7 +197,7 @@ studentRouter.post("/reauth", async (req, res) => {
                 await EmailVerification.updateOne({ email: req.body.email }, { $set: { code: code } })
                 res.json({
                     res: true,
-                    mes: "resend code: "+ code
+                    mes: "resend code: " + code
                 })
 
             }
@@ -209,4 +211,121 @@ studentRouter.post("/reauth", async (req, res) => {
 
 })
 
+studentRouter.post("/info", async (req, res) => {
+    const { error, value } = schemaSignin.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        let findStudent = await Student.findOne({ email: req.body.email, password: req.body.password })
+        if (findStudent == null) {
+            res.json({
+                res: false,
+                mes: "Email or password not correct!"
+            })
+        } else {
+            res.json(findStudent)
+        }
+    }
+})
+
+studentRouter.post("/joinroom", async (req, res) => {
+    const { error, value } = schemaJoinRoom.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        let findStudent = await Student.findOne({ email: req.body.email, password: req.body.password })
+        if (findStudent == null) {
+            res.json({
+                res: false,
+                mes: "Email or password not correct!"
+            })
+        } else {
+            let findRoom = await Room.findOne({ qrCode: req.body.qrcode })
+            if (findRoom == null) {
+                res.json({
+                    res: false,
+                    mes: "The room does not exist!"
+                })
+            } else {
+                let findSession = await Session.findOne({ idRoom: findRoom.id })
+                if (findSession == null) {
+                    res.json({
+                        res: false,
+                        mes: "This room session has ended"
+                    })
+                } else {
+                    let attandance = new Attendance({ idRoom: findSession.idRoom, idStudent: findStudent.id })
+                    await attandance.save()
+                    res.json({
+                        res: true,
+                        mes: "Attended"
+                    })
+                }
+            }
+        }
+    }
+})
+studentRouter.post("/attandance", async (req, res) => {
+    const { error, value } = schemaSignin.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        let findStudent = await Student.findOne({ email: req.body.email, password: req.body.password })
+        if (findStudent == null) {
+            res.json({
+                res: false,
+                mes: "Email or password not correct!"
+            })
+        } else {
+            let findAttendance = await Attendance.find({ idStudent: findStudent.id })
+            if (findAttendance.length <= 0) {
+                res.json({
+                    res: false,
+                    mes: "Student not found!"
+                })
+            } else {
+                res.json(findAttendance)
+            }
+        }
+    }
+})
+studentRouter.get("/session/:idroom", async (req, res) => {
+    if (!req.params.idroom) {
+        res.json({
+            res: false,
+            mes: "idRoom is required!"
+        })
+    } else {
+        let findRoom = await Room.findOne({ _id: req.params.idroom })
+        if (findRoom == null) {
+            res.json({
+                res: false,
+                mes: "The room does not exist!"
+            })
+        } else {
+            let findSession = await Session.findOne({ idRoom: findRoom.id })
+            if (findSession.length == null) {
+                res.json({
+                    res: false,
+                    mes: "The room session has be ended"
+                })
+            } else {
+                let attandance = await Attendance.find({ idRoom: findSession.idRoom })
+                let students = attandance.map(async e => {
+                    return await Student.findById(e.idStudent)
+                })
+                res.json(students)
+            }
+        }
+    }
+})
 module.exports = { studentRouter }
