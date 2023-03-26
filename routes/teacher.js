@@ -75,7 +75,7 @@ teacherRouter.post("/signin", async (req, res) => {
                     res.json({
                         res: true,
                         mes: "Sign in succssful",
-                        data: finduser
+                        data: finduser1
                     })
                 } else {
                     res.json({
@@ -227,7 +227,13 @@ teacherRouter.post("/info", async (req, res) => {
                 mes: "Email or password not correct!"
             })
         } else {
-            res.json(findteacher)
+            res.json(
+                {
+                    res:true,
+                    mes:"succssful",
+                    data:findteacher
+                }
+            )
         }
     }
 })
