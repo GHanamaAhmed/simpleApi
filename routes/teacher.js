@@ -71,7 +71,7 @@ teacherRouter.post("/signin", async (req, res) => {
             let finduser = await Teacher.find({ email: req.body.email })
             if (finduser.length > 0) {
                 let finduser1 = await Teacher.findOne({ email: req.body.email, password: req.body.password })
-                if (finduser1 == 0) {
+                if (finduser1 != null) {
                     res.json({
                         res: true,
                         mes: "Sign in succssful",

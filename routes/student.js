@@ -14,8 +14,8 @@ studentRouter.post("/signup", async (req, res) => {
         })
     } else {
         try {
-            let finduser = await Student.findOne({ email: req.body.email })
-            if (finduser == null) {
+            let finduser = await Student.find({ email: req.body.email })
+            if (finduser != null) {
                 res.json({
                     res: false,
                     mes: "Email is exist!"
@@ -67,10 +67,9 @@ studentRouter.post("/signin", async (req, res) => {
     } else {
         try {
             let finduser = await Student.findOne({ email: req.body.email })
-            print(finduser);
-            if (finduser == null) {
+            if (finduser != null) {
                 let finduser1 = await Student.findOne({ email: req.body.email, password: req.body.password })
-                if (finduser1 == null) {
+                if (finduser1 != null) {
                     res.json({
                         res: true,
                         mes: "Sign in succssful",
@@ -321,7 +320,7 @@ studentRouter.get("/session/:idroom", async (req, res) => {
             })
         } else {
             let findSession = await Session.findOne({ idRoom: findRoom.id })
-            if (findSession.length == null) {
+            if (findSession == null) {
                 res.json({
                     res: false,
                     mes: "The room session has be ended"
