@@ -238,7 +238,7 @@ teacherRouter.post("/info", async (req, res) => {
     }
 })
 teacherRouter.post("/createroom", async (req, res) => {
-    const { error, value } = schemaJoinRoom.valid(req.body)
+    const { error, value } = schemaJoinRoom.validate(req.body)
     if (error) {
         res.json({
             res: false,
