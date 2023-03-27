@@ -389,7 +389,7 @@ teacherRouter.post("/stoproom", async (req, res) => {
     }
 })
 teacherRouter.post("/rooms", async (req, res) => {
-    const { error, value } = schemaJoinRoom.validate(req.body)
+    const { error, value } = schemaSignin.validate(req.body)
     if (error) {
         res.json({
             res: false,
@@ -409,6 +409,35 @@ teacherRouter.post("/rooms", async (req, res) => {
                     res: true,
                     mes: "succssful",
                     data: rooms
+                }
+            )
+        }
+    }
+})
+teacherRouter.post("/sessions", async (req, res) => {
+    const { error, value } = schemaSignin.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        let findTeacher = await Teacher.findOne({ email: req.body.email, password: req.body.password })
+        if (findTeacher == null) {
+            res.json({
+                res: false,
+                mes: "Email or password not correct!"
+            })
+        } else {
+            let rooms = await Room.find({ idTeacher: findTeacher.id })
+            let sessions = rooms.map(e => {
+                return Session.findOne({ idRoom: e.id });
+            })
+            res.json(
+                {
+                    res: true,
+                    mes: "succssful",
+                    data: sessions
                 }
             )
         }
