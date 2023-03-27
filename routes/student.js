@@ -316,32 +316,41 @@ studentRouter.get("/session/:idroom", async (req, res) => {
             mes: "idRoom is required!"
         })
     } else {
-        let findRoom = await Room.findOne({ _id: req.params.idroom })
-        if (findRoom == null) {
-            res.json({
-                res: false,
-                mes: "The room does not exist!"
-            })
-        } else {
-            let findSession = await Session.findOne({ idRoom: findRoom.id })
-            if (findSession == null) {
+        if (req.params.idroom.match(/^[0-9a-fA-F]{24}$/)) {
+            let findRoom = await Room.findById(req.params.idroom)
+            if (findRoom == null) {
                 res.json({
                     res: false,
-                    mes: "The room session has be ended"
+                    mes: "The room does not exist!"
                 })
             } else {
-                let attandance = await Attendance.find({ idRoom: findSession.idRoom })
-                let students = attandance.map(async e => {
-                    return await Student.findById(e.idStudent)
-                })
-                res.json(
-                    {
-                        res: true,
-                        mes: "succssful",
-                        data: students
-                    }
-                )
+                let findSession = await Session.findOne({ idRoom: findRoom.id })
+                if (findSession == null) {
+                    res.json({
+                        res: false,
+                        mes: "The room session has be ended"
+                    })
+                } else {
+                    let attandance = await Attendance.find({ idRoom: findSession.idRoom })
+                    let students = attandance.map(async e => {
+                        return await Student.findById(e.idStudent)
+                    })
+                    res.json(
+                        {
+                            res: true,
+                            mes: "succssful",
+                            data: students
+                        }
+                    )
+                }
             }
+        } else {
+            res.json(
+                {
+                    res: false,
+                    mes: `${req.params.idroom} is not a valid ObjectId`,
+                }
+            )
         }
     }
 })
