@@ -256,7 +256,7 @@ studentRouter.post("/joinroom", async (req, res) => {
                     })
                 } else {
                     let finattandance = await Attendance.findOne({ idStudent: findStudent.id });
-                    if (finattandance != 0) {
+                    if (finattandance != null) {
                         res.json({
                             res: true,
                             mes: "Attended",
