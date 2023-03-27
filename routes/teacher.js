@@ -252,28 +252,38 @@ teacherRouter.post("/createroom", async (req, res) => {
                 mes: "Email or password not correct!"
             })
         } else {
-            let room = await new Room(
-                {
-                    createAt: new Date().toLocaleString(),
-                    idTeacher: findTeacher.id,
-                    module: findTeacher.specialist,
-                    qrCode: req.body.qrcode
-                }
-            )
-            await room.save()
-            let session = await new Session(
-                {
-                    idRoom: room.id
-                }
-            )
-            await session.save()
-            res.json(
-                {
-                    res: true,
-                    mes: "Rom created successfully",
-                    data: room
-                }
-            )
+            let findrooms = await Room.find({ qrCode: req.body.qrcode })
+            if (findrooms.length > 0) {
+                res.json(
+                    {
+                        res: false,
+                        mes: "this qr code exist!",
+                    }
+                )
+            } else {
+                let room = await new Room(
+                    {
+                        createAt: new Date().toLocaleString(),
+                        idTeacher: findTeacher.id,
+                        module: findTeacher.specialist,
+                        qrCode: req.body.qrcode
+                    }
+                )
+                await room.save()
+                let session = await new Session(
+                    {
+                        idRoom: room.id
+                    }
+                )
+                await session.save()
+                res.json(
+                    {
+                        res: true,
+                        mes: "Rom created successfully",
+                        data: room
+                    }
+                )
+            }
         }
     }
 })
