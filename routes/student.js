@@ -255,13 +255,22 @@ studentRouter.post("/joinroom", async (req, res) => {
                         mes: "This room session has ended"
                     })
                 } else {
-                    let attandance = new Attendance({ idRoom: findSession.idRoom, idStudent: findStudent.id })
-                    await attandance.save()
-                    res.json({
-                        res: true,
-                        mes: "Attended",
-                        data: attandance
-                    })
+                    let finattandance = await Attendance.findOne({ idStudent: findStudent.id });
+                    if (finattandance != 0) {
+                        res.json({
+                            res: true,
+                            mes: "Attended",
+                            data: finattandance
+                        })
+                    } else {
+                        let attandance = new Attendance({ idRoom: findSession.idRoom, idStudent: findStudent.id })
+                        await attandance.save()
+                        res.json({
+                            res: true,
+                            mes: "Attended",
+                            data: attandance
+                        })
+                    }
                 }
             }
         }
