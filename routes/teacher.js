@@ -1,6 +1,6 @@
 const teacherRouter = require('express').Router();
 const { Teacher, EmailVerification, Room, Session } = require('../database/database');
-const { schemaSignin, schemaStudent, schemaTeacher, schemaauth,schemaJoinRoom } = require('../validate/validate');
+const { schemaSignin, schemaStudent, schemaTeacher, schemaauth, schemaJoinRoom } = require('../validate/validate');
 const nodemailer = require("nodemailer");
 const { date } = require('joi');
 
@@ -229,9 +229,9 @@ teacherRouter.post("/info", async (req, res) => {
         } else {
             res.json(
                 {
-                    res:true,
-                    mes:"succssful",
-                    data:findteacher
+                    res: true,
+                    mes: "succssful",
+                    data: findteacher
                 }
             )
         }
@@ -340,6 +340,75 @@ teacherRouter.delete("/deletroom", async (req, res) => {
                 {
                     res: false,
                     mes: "Deleted succssfully"
+                }
+            )
+        }
+    }
+})
+teacherRouter.post("/stoproom", async (req, res) => {
+    const { error, value } = schemaJoinRoom.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        let findTeacher = await Teacher.findOne({ email: req.body.email, password: req.body.password })
+        if (findTeacher == null) {
+            res.json({
+                res: false,
+                mes: "Email or password not correct!"
+            })
+        } else {
+            let room = await Room.findOne({ qrCode: req.body.qrcode })
+            if (room == null) {
+                res.json(
+                    {
+                        res: false,
+                        mes: "This room not exist!"
+                    }
+                )
+            } else {
+                let session = await Session.findOne({ idRoom: room.id })
+                if (session == null) {
+                    res.json(
+                        {
+                            res: false,
+                            mes: "This session is ended"
+                        }
+                    )
+                } else {
+                    await Session.deleteOne({ idRoom: room.id })
+                    res.json({
+                        res: true,
+                        mes: "Session ended"
+                    })
+                }
+            }
+        }
+    }
+})
+teacherRouter.post("/rooms", async (req, res) => {
+    const { error, value } = schemaJoinRoom.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        let findTeacher = await Teacher.findOne({ email: req.body.email, password: req.body.password })
+        if (findTeacher == null) {
+            res.json({
+                res: false,
+                mes: "Email or password not correct!"
+            })
+        } else {
+            let rooms = await Room.find({ idTeacher: findTeacher.id })
+            res.json(
+                {
+                    res: true,
+                    mes: "succssful",
+                    data: rooms
                 }
             )
         }
