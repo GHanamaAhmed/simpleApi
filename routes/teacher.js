@@ -430,8 +430,8 @@ teacherRouter.post("/sessions", async (req, res) => {
             })
         } else {
             let rooms = await Room.find({ idTeacher: findTeacher.id })
-            let sessions = rooms.map(e => {
-                return Session.findOne({ idRoom: e.id });
+            let sessions = rooms.map(async e => {
+                return await Session.findOne({ idRoom: e.id });
             })
             res.json(
                 {
