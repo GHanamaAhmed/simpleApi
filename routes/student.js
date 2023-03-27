@@ -31,7 +31,7 @@ studentRouter.post("/signup", async (req, res) => {
                         res.json({
                             res: true,
                             mes: "Succeeful",
-                            data:user
+                            data: user
                         })
                     } else {
                         res.json({
@@ -73,7 +73,7 @@ studentRouter.post("/signin", async (req, res) => {
                     res.json({
                         res: true,
                         mes: "Sign in succssful",
-                        data:finduser1
+                        data: finduser1
                     })
                 } else {
                     res.json({
@@ -247,12 +247,7 @@ studentRouter.post("/joinroom", async (req, res) => {
             })
         } else {
             let findRoom = await Room.findOne({ qrCode: req.body.qrcode })
-            if (findRoom == null) {
-                res.json({
-                    res: false,
-                    mes: "The room does not exist!"
-                })
-            } else {
+            if (findRoom != null) {
                 let findSession = await Session.findOne({ idRoom: findRoom.id })
                 if (findSession == null) {
                     res.json({
@@ -265,7 +260,7 @@ studentRouter.post("/joinroom", async (req, res) => {
                     res.json({
                         res: true,
                         mes: "Attended",
-                        data:attandance
+                        data: attandance
                     })
                 }
             }
@@ -296,9 +291,9 @@ studentRouter.post("/attandance", async (req, res) => {
             } else {
                 res.json(
                     {
-                        res:true,
-                        mes:"succsuful",
-                        data:findAttendance
+                        res: true,
+                        mes: "succsuful",
+                        data: findAttendance
                     }
                 )
             }
@@ -332,9 +327,9 @@ studentRouter.get("/session/:idroom", async (req, res) => {
                 })
                 res.json(
                     {
-                        res:true,
-                        mes:"succssful",
-                        data:students
+                        res: true,
+                        mes: "succssful",
+                        data: students
                     }
                 )
             }
