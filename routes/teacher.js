@@ -439,6 +439,7 @@ teacherRouter.post("/sessions", async (req, res) => {
                 mes: "Email or password not correct!"
             })
         } else {
+            let rooms = await Room.find({ idTeacher: findTeacher.id })
             let sessions = await Promise.all(rooms.map(async e => {
                 return await Session.findOne({ idRoom: e.id });
             }));
