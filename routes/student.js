@@ -332,9 +332,9 @@ studentRouter.get("/session/:idroom", async (req, res) => {
                     })
                 } else {
                     let attandance = await Attendance.find({ idRoom: findSession.idRoom })
-                    let students = attandance.map(async e => {
+                    let students =await Promise.all( attandance.map(async e => {
                         return await Student.findById(e.idStudent)
-                    })
+                    }));
                     res.json(
                         {
                             res: true,
