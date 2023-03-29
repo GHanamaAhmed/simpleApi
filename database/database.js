@@ -89,6 +89,11 @@ const EmailVerification = mongoose.model("emailv", new mongoose.Schema(
         code: {
             type: Number,
             required: true
+        },
+        createAt: {
+            type: Date,
+            default: Date.now,
+            expires:90
         }
     }
 ))
@@ -110,8 +115,8 @@ const Room = mongoose.model("room", new mongoose.Schema(
             required: true
         },
         createAt: {
-            type: String,
-            required: true
+            type: Date,
+            default: new Date().toLocaleString()
         }
     }
 ))
@@ -121,6 +126,11 @@ const Session = mongoose.model("Session", new mongoose.Schema(
             type: String,
             required: true
         },
+        createAt: {
+            type: Date,
+            default: Date.now,
+            expires:90
+        }
     }
 ))
 const Attendance = mongoose.model("attendance", new mongoose.Schema(
@@ -135,4 +145,4 @@ const Attendance = mongoose.model("attendance", new mongoose.Schema(
         },
     }
 ))
-module.exports = { Student, Teacher, Specialist, EmailVerification,Room,Session,Attendance }
+module.exports = { Student, Teacher, Specialist, EmailVerification, Room, Session, Attendance }

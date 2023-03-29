@@ -263,7 +263,6 @@ teacherRouter.post("/createroom", async (req, res) => {
             } else {
                 let room = await new Room(
                     {
-                        createAt: new Date().toLocaleString(),
                         idTeacher: findTeacher.id,
                         module: findTeacher.specialist,
                         qrCode: req.body.qrcode
