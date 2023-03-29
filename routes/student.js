@@ -15,7 +15,7 @@ studentRouter.post("/signup", async (req, res) => {
     } else {
         try {
             let finduser = await Student.find({ email: req.body.email })
-            if (finduser != null) {
+            if (finduser == null) {
                 res.json({
                     res: false,
                     mes: "Email is exist!"

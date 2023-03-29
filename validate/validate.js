@@ -41,4 +41,9 @@ var schemaJoinRoom=joi.object({
     password:joi.string().max(20).min(8).required(),
     qrcode:joi.string()
 })
-module.exports={schemaTeacher,schemaStudent,schemaSignin,schemaSpecialist,schemaauth,schemaJoinRoom}
+var schemaeditRoom=joi.object({
+    email:joi.string().email().required(),
+    password:joi.string().max(20).min(8).required(),
+    idroom:joi.string()
+})
+module.exports={schemaTeacher,schemaStudent,schemaSignin,schemaSpecialist,schemaauth,schemaJoinRoom,schemaeditRoom}
