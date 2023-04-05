@@ -264,7 +264,7 @@ teacherRouter.post("/createroom", async (req, res) => {
                 let room = await new Room(
                     {
                         idTeacher: findTeacher.id,
-                        module: findTeacher.specialist,
+                        module: req.body.module||findTeacher.specialist,
                         qrCode: req.body.qrcode
                     }
                 )
