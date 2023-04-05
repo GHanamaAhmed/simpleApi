@@ -272,6 +272,13 @@ studentRouter.post("/joinroom", async (req, res) => {
                         })
                     }
                 }
+            }else{
+                res.json(
+                    {
+                        res:false,
+                        mes:"This room not exist"
+                    }
+                )
             }
         }
     }
