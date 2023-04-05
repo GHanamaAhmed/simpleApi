@@ -90,12 +90,12 @@ const EmailVerification = mongoose.model("emailv", new mongoose.Schema(
             type: Number,
             required: true
         },
-        createAt: {
-            type: Date,
-            default: Date.now,
-            expires:"2h",
-            index:true
-        }
+        // createAt: {
+        //     type: Date,
+        //     default: Date.now,
+        //     expires:"2h",
+        //     index:true
+        // }
     }
 ))
 const Room = mongoose.model("room", new mongoose.Schema(
@@ -127,12 +127,12 @@ const Session = mongoose.model("Session", new mongoose.Schema(
             type: String,
             required: true
         },
-        createAt: {
-            type: Date,
-            default: Date.now,
-            expires:"2h",
-            index:true
-        }
+        // createAt: {
+        //     type: Date,
+        //     default: Date.now,
+        //     expires:"2h",
+        //     index:true
+        // }
     }
 ))
 const Attendance = mongoose.model("attendance", new mongoose.Schema(
