@@ -93,7 +93,7 @@ const EmailVerification = mongoose.model("emailv", new mongoose.Schema(
         createAt: {
             type: Date,
             default: Date.now,
-            expires:5400
+            expires:"1h"
         }
     }
 ))
@@ -129,7 +129,7 @@ const Session = mongoose.model("Session", new mongoose.Schema(
         createAt: {
             type: Date,
             default: Date.now,
-            expires:5400
+            expires:"1h"
         }
     }
 ))
