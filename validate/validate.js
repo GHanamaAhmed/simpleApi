@@ -40,7 +40,8 @@ var schemaJoinRoom=joi.object({
     email:joi.string().email().required(),
     password:joi.string().max(20).min(8).required(),
     qrcode:joi.string().required(),
-    module:joi.string()
+    module:joi.string(),
+    type:joi.string().valid('Cour', 'Td','Tp'),
 })
 var schemaeditRoom=joi.object({
     email:joi.string().email().required(),

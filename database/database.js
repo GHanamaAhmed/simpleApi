@@ -115,6 +115,9 @@ const Room = mongoose.model("room", new mongoose.Schema(
             type: String,
             required: true
         },
+        type: {
+            type: String,
+        },
         createAt: {
             type: Date,
             default: new Date().toLocaleString()

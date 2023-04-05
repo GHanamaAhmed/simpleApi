@@ -265,7 +265,8 @@ teacherRouter.post("/createroom", async (req, res) => {
                     {
                         idTeacher: findTeacher.id,
                         module: req.body.module||findTeacher.specialist,
-                        qrCode: req.body.qrcode
+                        qrCode: req.body.qrcode,
+                        type:req.body.type||"undefine"
                     }
                 )
                 await room.save()
