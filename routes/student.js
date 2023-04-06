@@ -272,11 +272,11 @@ studentRouter.post("/joinroom", async (req, res) => {
                         })
                     }
                 }
-            }else{
+            } else {
                 res.json(
                     {
-                        res:false,
-                        mes:"This room not exist"
+                        res: false,
+                        mes: "This room not exist"
                     }
                 )
             }
@@ -305,11 +305,12 @@ studentRouter.post("/attandance", async (req, res) => {
                     mes: "Student not found!"
                 })
             } else {
+                let findRoom =await Promise.all(findAttendance.map(async (e) => await Room.findById(e.idRoom)))
                 res.json(
                     {
                         res: true,
                         mes: "succsuful",
-                        data: findAttendance
+                        data: findRoom
                     }
                 )
             }
@@ -339,7 +340,7 @@ studentRouter.get("/session/:idroom", async (req, res) => {
                     })
                 } else {
                     let attandance = await Attendance.find({ idRoom: findSession.idRoom })
-                    let students =await Promise.all( attandance.map(async e => {
+                    let students = await Promise.all(attandance.map(async e => {
                         return await Student.findById(e.idStudent)
                     }));
                     res.json(
