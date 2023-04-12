@@ -308,7 +308,10 @@ studentRouter.post("/attandance", async (req, res) => {
                 let findRoom = await Promise.all(findAttendance.map(async (e) => {
                     let room = await Room.findById(e.idRoom)
                     const { firstname, lastname } = await Teacher.findById(room.idTeacher)
-                    return { ...room, teacherName: `${lastname} ${firstname}` }
+                    room = {
+                        ["teacherName"]: `${lastname} ${firstname}`
+                    }
+                    return room
                 }))
                 res.json(
                     {
