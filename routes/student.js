@@ -255,7 +255,7 @@ studentRouter.post("/joinroom", async (req, res) => {
                         mes: "This room session has ended"
                     })
                 } else {
-                    let finattandance = await Attendance.findOne({ idStudent: findStudent.id, idRoom: req.body.qrCode });
+                    let finattandance = await Attendance.findOne({ idStudent: findStudent.id,idRoom:req.body.qrCode });
                     if (finattandance != null) {
                         res.json({
                             res: true,
@@ -305,12 +305,7 @@ studentRouter.post("/attandance", async (req, res) => {
                     mes: "Student not found!"
                 })
             } else {
-                let findRoom = await Promise.all(findAttendance.map(async (e) => {
-                    let room = await Room.findById(e.idRoom)
-                    const { firstname, lastname } = await Teacher.findById(room.idTeacher)
-                    room["teacherName"]= `${lastname} ${firstname}`
-                    return room
-                }))
+                let findRoom =await Promise.all(findAttendance.map(async (e) => await Room.findById(e.idRoom)))
                 res.json(
                     {
                         res: true,
