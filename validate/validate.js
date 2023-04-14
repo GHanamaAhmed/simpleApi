@@ -12,6 +12,15 @@ var schemaStudent=joi.object({
     specialist : joi.string().required(),
     year : joi.string().required(),
 })
+var schemaStudentUpdate=joi.object({
+    firstname:joi.string().required().min(1).max(20),
+    lastname:joi.string().required().min(1).max(20),
+    password:joi.string().max(20).min(8).required(),
+    faculte: joi.string().required(),
+    department : joi.string().required(),
+    specialist : joi.string().required(),
+    year : joi.string().required(),
+})
 //Schema signup validation up for Teacher
 var schemaTeacher=joi.object({
     firstname:joi.string().required().min(1).max(20),
@@ -48,4 +57,4 @@ var schemaeditRoom=joi.object({
     password:joi.string().max(20).min(8).required(),
     idroom:joi.string()
 })
-module.exports={schemaTeacher,schemaStudent,schemaSignin,schemaSpecialist,schemaauth,schemaJoinRoom,schemaeditRoom}
+module.exports={schemaTeacher,schemaStudent,schemaSignin,schemaSpecialist,schemaauth,schemaJoinRoom,schemaeditRoom,schemaStudentUpdate}

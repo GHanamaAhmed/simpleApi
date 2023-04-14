@@ -1,6 +1,6 @@
 const studentRouter = require('express').Router();
 const { Student, Teacher, EmailVerification, Session, Room, Attendance } = require('../database/database');
-const { schemaSignin, schemaStudent, schemaTeacher, schemaauth, schemaJoinRoom } = require('../validate/validate');
+const { schemaSignin, schemaStudent, schemaTeacher, schemaauth, schemaJoinRoom,schemaStudentUpdate } = require('../validate/validate');
 const nodemailer = require("nodemailer");
 const { default: axios } = require('axios');
 
@@ -73,6 +73,48 @@ studentRouter.post("/signin", async (req, res) => {
                     res.json({
                         res: true,
                         mes: "Sign in succssful",
+                        data: finduser1
+                    })
+                } else {
+                    res.json({
+                        res: false,
+                        mes: "Password not correct!"
+                    })
+                }
+            } else {
+                res.json({
+                    res: false,
+                    mes: "Email not exist!"
+                })
+            }
+        } catch (err) {
+            res.json({
+                res: false,
+                mes: err
+            })
+        }
+    }
+
+})
+
+//Sign in Student
+studentRouter.post("/update", async (req, res) => {
+    const { value, error } = schemaStudentUpdate.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        try {
+            let finduser = await Student.findOne({ email: req.body.email })
+            if (finduser != null) {
+                let finduser1 = await Student.findOne({ email: req.body.email, password: req.body.password })
+                if (finduser1 != null) {
+                    await Student.findByIdAndUpdate(finduser1.id,{$set:{firstname:req.body.firstname,lastname:req.body.lastname,password:req.body.password,department:req.body.department,faculte:req.body.faculte,specialist:req.body.specialist,year:req.body.year}})
+                    res.json({
+                        res: true,
+                        mes: "Update succssful",
                         data: finduser1
                     })
                 } else {
