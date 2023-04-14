@@ -111,7 +111,7 @@ studentRouter.post("/update", async (req, res) => {
             if (finduser != null) {
                 let finduser1 = await Student.findOne({ email: req.body.email, password: req.body.password })
                 if (finduser1 != null) {
-                    await Student.findByIdAndUpdate(finduser1.id,{$set:{firstname:req.body.firstname,lastname:req.body.lastname,password:req.body.password,department:req.body.department,faculte:req.body.faculte,specialist:req.body.specialist,year:req.body.year}})
+                   finduser1= await Student.findByIdAndUpdate(finduser1.id,{$set:{firstname:req.body.firstname,lastname:req.body.lastname,password:req.body.password,department:req.body.department,faculte:req.body.faculte,specialist:req.body.specialist,year:req.body.year}})
                     res.json({
                         res: true,
                         mes: "Update succssful",
