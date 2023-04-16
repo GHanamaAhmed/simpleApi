@@ -297,6 +297,8 @@ studentRouter.post("/joinroom", async (req, res) => {
                 } else {
                     let finattandance = await Attendance.findOne({ idStudent: findStudent.id, idRoom: req.body.qrCode });
                     if (finattandance != null) {
+                        const io = req.io.of("/rooms")
+                        io.to(findRoom.id).emit("attandance", { findStudent })
                         res.json({
                             res: true,
                             mes: "Attended",
