@@ -1,9 +1,7 @@
 const studentRouter = require('express').Router();
 const { Student, Teacher, EmailVerification, Session, Room, Attendance } = require('../database/database');
-const { schemaSignin, schemaStudent, schemaTeacher, schemaauth, schemaJoinRoom,schemaStudentUpdate } = require('../validate/validate');
+const { schemaSignin, schemaStudent, schemaTeacher, schemaauth, schemaJoinRoom, schemaStudentUpdate } = require('../validate/validate');
 const nodemailer = require("nodemailer");
-const { default: axios } = require('axios');
-
 //Sign up Student
 studentRouter.post("/signup", async (req, res) => {
     const { value, error } = schemaStudent.validate(req.body)
@@ -111,7 +109,7 @@ studentRouter.post("/update", async (req, res) => {
             if (finduser != null) {
                 let finduser1 = await Student.findOne({ email: req.body.email, password: req.body.password })
                 if (finduser1 != null) {
-                   finduser1= await Student.findByIdAndUpdate(finduser1.id,{$set:{firstname:req.body.firstname,lastname:req.body.lastname,password:req.body.password,department:req.body.department,faculte:req.body.faculte,specialist:req.body.specialist,year:req.body.year}})
+                    finduser1 = await Student.findByIdAndUpdate(finduser1.id, { $set: { firstname: req.body.firstname, lastname: req.body.lastname, password: req.body.password, department: req.body.department, faculte: req.body.faculte, specialist: req.body.specialist, year: req.body.year } })
                     res.json({
                         res: true,
                         mes: "Update succssful",
@@ -297,7 +295,7 @@ studentRouter.post("/joinroom", async (req, res) => {
                         mes: "This room session has ended"
                     })
                 } else {
-                    let finattandance = await Attendance.findOne({ idStudent: findStudent.id,idRoom:req.body.qrCode });
+                    let finattandance = await Attendance.findOne({ idStudent: findStudent.id, idRoom: req.body.qrCode });
                     if (finattandance != null) {
                         res.json({
                             res: true,
@@ -307,6 +305,8 @@ studentRouter.post("/joinroom", async (req, res) => {
                     } else {
                         let attandance = new Attendance({ idRoom: findSession.idRoom, idStudent: findStudent.id })
                         await attandance.save()
+                        const io = req.io.of("/rooms")
+                        io.to(findRoom.id).emit("attandance", { findStudent })
                         res.json({
                             res: true,
                             mes: "Attended",
@@ -347,7 +347,7 @@ studentRouter.post("/attandance", async (req, res) => {
                     mes: "Student not found!"
                 })
             } else {
-                let findRoom =await Promise.all(findAttendance.map(async (e) => await Room.findById(e.idRoom)))
+                let findRoom = await Promise.all(findAttendance.map(async (e) => await Room.findById(e.idRoom)))
                 res.json(
                     {
                         res: true,
