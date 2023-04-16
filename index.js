@@ -38,11 +38,11 @@ const connectDB = async () => {
     }
 }
 io.of("/rooms").on("connection", (socket) => {
-    socket.on("join-room", (roomID, userID) => {
-        console.log({ roomID, userID });
-        socket.id = userID
-        socket.join(roomID)
-    })
+    // socket.on("join-room", (roomID, userID) => {
+    //     console.log({ roomID, userID });
+    //     socket.id = userID
+    //     socket.join(roomID)
+    // })
     setInterval(() => {
         socket.emit("message", "hello")
     }, 1000);
