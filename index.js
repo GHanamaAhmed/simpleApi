@@ -43,6 +43,9 @@ io.of("/rooms").on("connection", (socket) => {
         socket.id = userID
         socket.join(roomID)
     })
+    setInterval(() => {
+        socket.emit("message", "hello")
+    }, 1000);
 });
 //run server
 connectDB().then(() => {
