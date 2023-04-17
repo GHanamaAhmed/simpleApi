@@ -306,7 +306,7 @@ studentRouter.post("/joinroom", async (req, res) => {
                         let attandance = new Attendance({ idRoom: findSession.idRoom, idStudent: findStudent.id })
                         await attandance.save()
                         const rooms = req.io.of('/rooms');
-                        rooms.to(findSession.idRoom).emit('join', { firstName: findStudent.firstname,lastName:findStudent.lastname, idStudent: findStudent.id  });
+                        rooms.to(findSession.idRoom).emit('join', { firstname: findStudent.firstname, lastname: findStudent.lastname, idStudent: findStudent.id });
                         res.json({
                             res: true,
                             mes: "Attended",
@@ -383,7 +383,8 @@ studentRouter.get("/session/:idroom", async (req, res) => {
                 } else {
                     let attandance = await Attendance.find({ idRoom: findSession.idRoom })
                     let students = await Promise.all(attandance.map(async e => {
-                        return await Student.findById(e.idStudent)
+                        let student = await Student.findById(e.idStudent)
+                        return { firstname: student.firstname, lastname: student.lastname, idStudent: student.id }
                     }));
                     res.json(
                         {
