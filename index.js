@@ -41,6 +41,7 @@ const connectDB = async () => {
 }
 rooms.on("connection", (socket) => {
     socket.on("join-room", ({idRoom, email}) => {
+        rooms.emit("message", {idRoom, email})
         socket.id = email
         socket.join(idRoom)
     })
