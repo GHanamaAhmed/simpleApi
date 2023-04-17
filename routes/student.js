@@ -295,10 +295,8 @@ studentRouter.post("/joinroom", async (req, res) => {
                         mes: "This room session has ended"
                     })
                 } else {
-                    let finattandance = await Attendance.findOne({ idStudent: findStudent.id, idRoom: req.body.qrCode });
+                    let finattandance = await Attendance.findOne({ idRoom: findSession.idRoom, idStudent: findStudent.id });
                     if (finattandance != null) {
-                        const io = req.io.of("/rooms")
-                        io.to(findRoom.id).emit("attandance", { findStudent })
                         res.json({
                             res: true,
                             mes: "Attended",
@@ -307,8 +305,6 @@ studentRouter.post("/joinroom", async (req, res) => {
                     } else {
                         let attandance = new Attendance({ idRoom: findSession.idRoom, idStudent: findStudent.id })
                         await attandance.save()
-                        const io = req.io.of("/rooms")
-                        io.to(findRoom.id).emit("attandance", { findStudent })
                         res.json({
                             res: true,
                             mes: "Attended",

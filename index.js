@@ -11,14 +11,14 @@ const server = require('http').createServer(app);
 const io = new Server(server);
 mongoose.set("strictQuery", false)
 const url = "mongodb://127.0.0.1:27017/mobile";
-const PORT = 8080;
+const PORT = 3000;
 //middleware
 app.use(helmet())
 app.use(bodyPparser.urlencoded({ extended: true }))
-app.use((req, res, next) => {
-    req.io = io;
-    next();
-})
+// app.use((req, res, next) => {
+//     req.io = io;
+//     next();
+// })
 app.use("/student", studentRouter)
 app.use("/teacher", teacherRouter)
 app.use("/specialist", specialistesRouter)
@@ -37,14 +37,14 @@ const connectDB = async () => {
         }
     }
 }
-io.of("/rooms").on("connection", (socket) => {
+io.on("connection", (socket) => {
     // socket.on("join-room", (roomID, userID) => {
     //     console.log({ roomID, userID });
     //     socket.id = userID
     //     socket.join(roomID)
     // })
     setInterval(() => {
-        socket.emit("message", "hello")
+        io.emit("message", "hello")
     }, 1000);
 });
 //run server
