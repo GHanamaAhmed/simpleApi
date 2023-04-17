@@ -68,13 +68,23 @@
         <input id="input" autocomplete="off" /><button>Send</button>
     </form>
     <script>
-        var socket = io("https://simpleapi-p29y.onrender.com/rooms", { transports: ['websocket']});
+        var socket = io("http://localhost:3000/rooms", {
+            transports: ['websocket'],
+            auth: {
+                "email": "loloj7448@gmail.com",
+                "password": "12345678"
+            }
+        });
         var form = document.getElementById('form');
         var input = document.getElementById('input');
-        socket.on("message",(r)=>{
+        socket.on("message", (r) => {
             console.log(r);
         })
-        socket.on("join",(r)=>{
+        socket.emit("send","ahmed")
+        socket.on("receive", (r) => {
+            console.log(r);
+        })
+        socket.on("join", (r) => {
             console.log(r);
         })
     </script>

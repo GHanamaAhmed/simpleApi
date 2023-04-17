@@ -9,6 +9,7 @@ const { studentRouter } = require('./routes/student');
 const { teacherRouter } = require('./routes/teacher');
 const { specialistesRouter } = require('./routes/specialistes');
 const { Server } = require('socket.io');
+const { Teacher, Student } = require('./database/database');
 const server = require('http').createServer(app);
 const io = new Server(server);
 const rooms = io.of('/rooms');
@@ -17,6 +18,17 @@ const url = "mongodb://127.0.0.1:27017/mobile";
 //middleware
 app.use(helmet())
 app.use(bodyPparser.urlencoded({ extended: true }))
+//Authentication before connect to Socket.io
+rooms.use(async (socket, next) => {
+    const email = socket.handshake?.auth?.email;
+    const password = socket.handshake?.auth?.password;
+    const teacher = await Teacher.findOne({ email, password })
+    const student = await Student.findOne({ email, password })
+    if (teacher || student) {
+        next();
+    }
+})
+//send socket.io to router
 app.use((req, res, next) => {
     req.io = io;
     next();
@@ -39,13 +51,16 @@ const connectDB = async () => {
         }
     }
 }
+
+//Socket.io
 rooms.on("connection", (socket) => {
-    socket.on("join-room", ({idRoom, email}) => {
-        rooms.emit("message", {idRoom, email})
+    socket.on("join-room", ({ idRoom, email }) => {
         socket.id = email
         socket.join(idRoom)
     })
 });
+
+
 //run server
 connectDB().then(() => {
     server.listen(app.get("port"))
