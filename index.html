@@ -68,7 +68,7 @@
         <input id="input" autocomplete="off" /><button>Send</button>
     </form>
     <script>
-        var socket = io("http://localhost:3000", { transports: ['websocket']});
+        var socket = io("http://localhost:3000/rooms", { transports: ['websocket']});
         var form = document.getElementById('form');
         var input = document.getElementById('input');
         socket.on("message",(r)=>{

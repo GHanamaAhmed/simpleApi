@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+const PORT = 3000;
+app.set("port", process.env.PORT || PORT);
 const bodyPparser = require('body-parser');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
@@ -9,9 +11,9 @@ const { specialistesRouter } = require('./routes/specialistes');
 const { Server } = require('socket.io');
 const server = require('http').createServer(app);
 const io = new Server(server);
+const rooms = io.of('/rooms');
 mongoose.set("strictQuery", false)
 const url = "mongodb://127.0.0.1:27017/mobile";
-const PORT = 3000;
 //middleware
 app.use(helmet())
 app.use(bodyPparser.urlencoded({ extended: true }))
@@ -37,17 +39,20 @@ const connectDB = async () => {
         }
     }
 }
-io.on("connection", (socket) => {
+rooms.on("connection", (socket) => {
     // socket.on("join-room", (roomID, userID) => {
     //     console.log({ roomID, userID });
     //     socket.id = userID
     //     socket.join(roomID)
     // })
+    socket.on("send", (data) => {
+        socket.emit("message", data)
+    })
     setInterval(() => {
-        io.emit("message", "hello")
+        rooms.emit("message", "hello")
     }, 1000);
 });
 //run server
 connectDB().then(() => {
-    app.listen(process.env.PORT || PORT)
+    server.listen(app.get("port"))
 })
