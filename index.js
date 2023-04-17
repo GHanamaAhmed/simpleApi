@@ -25,6 +25,9 @@ rooms.use(async (socket, next) => {
     const teacher = await Teacher.findOne({ email, password })
     const student = await Student.findOne({ email, password })
     if (teacher || student) {
+        socket.id = email
+        console.log(socket.id);
+        rooms.emit("receve", socket.id)
         next();
     }
 })
@@ -57,6 +60,9 @@ rooms.on("connection", (socket) => {
     socket.on("join-room", ({ idRoom, email }) => {
         socket.id = email
         socket.join(idRoom)
+    })
+    socket.on("send",(data)=>{
+        socket.emit("receve",socket.id)
     })
 });
 
