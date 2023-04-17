@@ -71,16 +71,9 @@
         var socket = io("https://simpleapi-p29y.onrender.com/rooms", { transports: ['websocket']});
         var form = document.getElementById('form');
         var input = document.getElementById('input');
-        socket.on("message",(r)=>{
+        socket.on("join",(r)=>{
             console.log(r);
         })
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            if (input.value) {
-                socket.emit('send', input.value);
-                input.value = '';
-            }
-        });
     </script>
 </body>
 
