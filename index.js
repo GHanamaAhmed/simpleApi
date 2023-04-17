@@ -17,10 +17,10 @@ const url = "mongodb://127.0.0.1:27017/mobile";
 //middleware
 app.use(helmet())
 app.use(bodyPparser.urlencoded({ extended: true }))
-// app.use((req, res, next) => {
-//     req.io = io;
-//     next();
-// })
+app.use((req, res, next) => {
+    req.io = io;
+    next();
+})
 app.use("/student", studentRouter)
 app.use("/teacher", teacherRouter)
 app.use("/specialist", specialistesRouter)
@@ -40,11 +40,10 @@ const connectDB = async () => {
     }
 }
 rooms.on("connection", (socket) => {
-    // socket.on("join-room", (roomID, userID) => {
-    //     console.log({ roomID, userID });
-    //     socket.id = userID
-    //     socket.join(roomID)
-    // })
+    socket.on("join-room", ({idRoom, email}) => {
+        socket.id = email
+        socket.join(idRoom)
+    })
     socket.on("send", (data) => {
         socket.emit("message", data)
     })
