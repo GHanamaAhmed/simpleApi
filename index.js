@@ -44,12 +44,6 @@ rooms.on("connection", (socket) => {
         socket.id = email
         socket.join(idRoom)
     })
-    socket.on("send", (data) => {
-        socket.emit("message", data)
-    })
-    setInterval(() => {
-        rooms.emit("message", "hello")
-    }, 1000);
 });
 //run server
 connectDB().then(() => {
