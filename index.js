@@ -30,6 +30,16 @@ rooms.use(async (socket, next) => {
         next();
     }
 })
+students.use(async (socket, next) => {
+    const email = socket.handshake?.auth?.email;
+    const password = socket.handshake?.auth?.password;
+    const teacher = await Teacher.findOne({ email, password })
+    const student = await Student.findOne({ email, password })
+    if (teacher || student) {
+        socket.id = email
+        next();
+    }
+})
 //send socket.io to router
 app.use((req, res, next) => {
     req.io = io;
@@ -62,7 +72,7 @@ rooms.on("connection", (socket) => {
     })
 });
 students.on("connection", (socket) => {
-    socket.on("join-room", ({  email }) => {
+    socket.on("join-room", ({ email }) => {
         socket.id = email
         socket.join(email)
     })
