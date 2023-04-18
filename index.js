@@ -20,16 +20,16 @@ const url = "mongodb://127.0.0.1:27017/mobile";
 app.use(helmet())
 app.use(bodyPparser.urlencoded({ extended: true }))
 //Authentication before connect to Socket.io
-rooms.use(async (socket, next) => {
-    const email = socket.handshake?.auth?.email;
-    const password = socket.handshake?.auth?.password;
-    const teacher = await Teacher.findOne({ email, password })
-    const student = await Student.findOne({ email, password })
-    if (teacher || student) {
-        socket.id = email
-        next();
-    }
-})
+// rooms.use(async (socket, next) => {
+//     const email = socket.handshake?.auth?.email;
+//     const password = socket.handshake?.auth?.password;
+//     const teacher = await Teacher.findOne({ email, password })
+//     const student = await Student.findOne({ email, password })
+//     if (teacher || student) {
+//         socket.id = email
+//         next();
+//     }
+// })
 students.use(async (socket, next) => {
     const email = socket.handshake?.auth?.email;
     const password = socket.handshake?.auth?.password;
