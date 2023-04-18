@@ -52,6 +52,7 @@ var schemaJoinRoom=joi.object({
     qrcode:joi.string().required(),
     module:joi.string(),
     type:joi.string().valid('Cour', 'Td','Tp'),
+    specialist:joi.string(),
 })
 var schemaeditRoom=joi.object({
     email:joi.string().email().required(),

@@ -276,6 +276,8 @@ teacherRouter.post("/createroom", async (req, res) => {
                     }
                 )
                 await session.save()
+                const students = req.io.of('/students');
+                students.to(req.body.specialist).emit('create-room',room)
                 res.json(
                     {
                         res: true,

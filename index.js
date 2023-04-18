@@ -36,6 +36,7 @@ students.use(async (socket, next) => {
     const teacher = await Teacher.findOne({ email, password })
     const student = await Student.findOne({ email, password })
     if (teacher || student) {
+        socket.id = email
         next();
     }
 })
@@ -66,13 +67,15 @@ const connectDB = async () => {
 //Socket.io
 rooms.on("connection", (socket) => {
     socket.on("join-room", ({ idRoom, email }) => {
-        socket.id = email
         socket.join(idRoom)
     })
 });
 students.on("connection", (socket) => {
     socket.on("join-room", ({ email }) => {
         socket.join(email)
+    })
+    socket.on("join-specialist", ({ specialist}) => {
+        socket.join(specialist)
     })
 });
 
