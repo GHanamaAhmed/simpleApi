@@ -73,7 +73,6 @@ rooms.on("connection", (socket) => {
 });
 students.on("connection", (socket) => {
     socket.on("join-room", ({ email }) => {
-        socket.id = email
         socket.join(email)
     })
 });
