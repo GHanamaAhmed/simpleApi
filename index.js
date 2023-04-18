@@ -20,23 +20,21 @@ const url = "mongodb://127.0.0.1:27017/mobile";
 app.use(helmet())
 app.use(bodyPparser.urlencoded({ extended: true }))
 //Authentication before connect to Socket.io
-// rooms.use(async (socket, next) => {
-//     const email = socket.handshake?.auth?.email;
-//     const password = socket.handshake?.auth?.password;
-//     const teacher = await Teacher.findOne({ email, password })
-//     const student = await Student.findOne({ email, password })
-//     if (teacher || student) {
-//         socket.id = email
-//         next();
-//     }
-// })
+rooms.use(async (socket, next) => {
+    const email = socket.handshake?.auth?.email;
+    const password = socket.handshake?.auth?.password;
+    const teacher = await Teacher.findOne({ email, password })
+    const student = await Student.findOne({ email, password })
+    if (teacher || student) {
+        next();
+    }
+})
 students.use(async (socket, next) => {
     const email = socket.handshake?.auth?.email;
     const password = socket.handshake?.auth?.password;
     const teacher = await Teacher.findOne({ email, password })
     const student = await Student.findOne({ email, password })
     if (teacher || student) {
-        socket.id = email
         next();
     }
 })
@@ -74,7 +72,7 @@ students.on("connection", (socket) => {
     socket.on("join-room", ({ email }) => {
         socket.join(email)
     })
-    socket.on("join-specialist", ({ specialist}) => {
+    socket.on("join-specialist", ({ specialist }) => {
         socket.join(specialist)
     })
 });
