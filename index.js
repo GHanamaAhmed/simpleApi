@@ -61,7 +61,6 @@ const connectDB = async () => {
         }
     }
 }
-
 //Socket.io
 rooms.on("connection", (socket) => {
     socket.on("join-room", ({ idRoom, email }) => {
@@ -76,7 +75,6 @@ students.on("connection", (socket) => {
         socket.join(specialist)
     })
 });
-
 //run server
 connectDB().then(() => {
     server.listen(app.get("port"))
