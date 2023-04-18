@@ -36,7 +36,6 @@ students.use(async (socket, next) => {
     const teacher = await Teacher.findOne({ email, password })
     const student = await Student.findOne({ email, password })
     if (teacher || student) {
-        socket.id = email
         next();
     }
 })
