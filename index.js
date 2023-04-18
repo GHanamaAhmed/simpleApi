@@ -13,6 +13,7 @@ const { Teacher, Student } = require('./database/database');
 const server = require('http').createServer(app);
 const io = new Server(server);
 const rooms = io.of('/rooms');
+const students = io.of('/students');
 mongoose.set("strictQuery", false)
 const url = "mongodb://127.0.0.1:27017/mobile";
 //middleware
@@ -60,7 +61,12 @@ rooms.on("connection", (socket) => {
         socket.join(idRoom)
     })
 });
-
+students.on("connection", (socket) => {
+    socket.on("join-room", ({  email }) => {
+        socket.id = email
+        socket.join(email)
+    })
+});
 
 //run server
 connectDB().then(() => {

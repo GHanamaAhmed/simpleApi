@@ -306,7 +306,9 @@ studentRouter.post("/joinroom", async (req, res) => {
                         let attandance = new Attendance({ idRoom: findSession.idRoom, idStudent: findStudent.id })
                         await attandance.save()
                         const rooms = req.io.of('/rooms');
+                        const students = req.io.of('/students');
                         rooms.to(findSession.idRoom).emit('join', { firstname: findStudent.firstname, lastname: findStudent.lastname, idStudent: findStudent.id,specialist:findStudent.specialist });
+                        students.to(findStudent.email).emit('add-room',findRoom)
                         res.json({
                             res: true,
                             mes: "Attended",
