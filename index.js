@@ -68,7 +68,7 @@ rooms.on("connection", (socket) => {
     })
 });
 students.on("connection", (socket) => {
-    socket.on("join-room", ({ email }) => {
+    socket.on("join-r", ({ email }) => {
         socket.join(email)
     })
     socket.on("join-specialist", ({ specialist }) => {
