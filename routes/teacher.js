@@ -285,7 +285,7 @@ teacherRouter.post("/createroom", async (req, res) => {
                             idStudent: ModuleStudent[i].id,
                             idTeacher: findTeacher.id,
                             idRoom: room.id,
-                            type: "createRoom",
+                            type: req.body.type || "undefine",
                             module: req.body.module || findTeacher.specialist,
                             date: new Date()
                         }
