@@ -1,3 +1,4 @@
+const { required } = require('joi');
 const mongoose = require('mongoose');
 //Schema DB for Student
 const Student = mongoose.model("student", new mongoose.Schema({
@@ -150,4 +151,33 @@ const Attendance = mongoose.model("attendance", new mongoose.Schema(
         },
     }
 ))
-module.exports = { Student, Teacher, Specialist, EmailVerification, Room, Session, Attendance }
+const Notification = mongoose.model("notification", new mongoose.Schema(
+    {
+        idRoom: {
+            type: String,
+            required: true
+        },
+        idStudent: {
+            type: String,
+            required: true
+        },
+        idTeacher: {
+            type: String,
+            required: true
+        },
+        type: {
+            type: String,
+            required: true
+        },
+        date: {
+            type: Date,
+            default: new Date().toLocaleString(),
+            required: true
+        },
+        module: {
+            type: String,
+            required: true
+        },
+    }
+));
+module.exports = { Student, Teacher, Specialist, EmailVerification, Room, Session, Attendance, Notification }

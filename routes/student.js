@@ -309,8 +309,8 @@ studentRouter.post("/joinroom", async (req, res) => {
                         await attandance.save()
                         const rooms = req.io.of('/rooms');
                         const students = req.io.of('/students');
-                        rooms.to(findSession.idRoom).emit('join', { firstname: findStudent.firstname, lastname: findStudent.lastname, idStudent: findStudent.id,specialist:findStudent.specialist,sex:findStudent.sex });
-                        students.to(findStudent.email).emit('add-r',findRoom)
+                        rooms.to(findSession.idRoom).emit('join', { firstname: findStudent.firstname, lastname: findStudent.lastname, idStudent: findStudent.id, specialist: findStudent.specialist, sex: findStudent.sex });
+                        students.to(findStudent.email).emit('add-r', findRoom)
                         res.json({
                             res: true,
                             mes: "Attended",
@@ -363,6 +363,33 @@ studentRouter.post("/attandance", async (req, res) => {
         }
     }
 })
+studentRouter.post("/notification", async (req, res) => {
+    const { error, value } = schemaSignin.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        let findStudent = await Student.findOne({ email: req.body.email, password: req.body.password })
+        if (findStudent == null) {
+            res.json({
+                res: false,
+                mes: "Email or password not correct!"
+            })
+        } else {
+            let findNotification = await Notification.find({ idStudent: findStudent.id })
+            res.json(
+                {
+                    res: true,
+                    mes: "succsuful",
+                    data: findNotification
+                }
+            )
+
+        }
+    }
+})
 studentRouter.get("/session/:idroom", async (req, res) => {
     if (!req.params.idroom) {
         res.json({
@@ -388,7 +415,7 @@ studentRouter.get("/session/:idroom", async (req, res) => {
                     let attandance = await Attendance.find({ idRoom: findSession.idRoom })
                     let students = await Promise.all(attandance.map(async e => {
                         let student = await Student.findById(e.idStudent)
-                        return { firstname: student.firstname, lastname: student.lastname, idStudent: student.id,specialist:student.specialist,sex:student.sex }
+                        return { firstname: student.firstname, lastname: student.lastname, idStudent: student.id, specialist: student.specialist, sex: student.sex }
                     }));
                     res.json(
                         {

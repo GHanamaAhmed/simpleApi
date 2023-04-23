@@ -1,5 +1,5 @@
 const teacherRouter = require('express').Router();
-const { Teacher, EmailVerification, Room, Session } = require('../database/database');
+const { Teacher, EmailVerification, Room, Session, Student,Notification } = require('../database/database');
 const { schemaSignin, schemaStudent, schemaTeacher, schemaauth, schemaJoinRoom, schemaeditRoom } = require('../validate/validate');
 const nodemailer = require("nodemailer");
 const { date } = require('joi');
@@ -264,9 +264,9 @@ teacherRouter.post("/createroom", async (req, res) => {
                 let room = await new Room(
                     {
                         idTeacher: findTeacher.id,
-                        module: req.body.module||findTeacher.specialist,
+                        module: req.body.module || findTeacher.specialist,
                         qrCode: req.body.qrcode,
-                        type:req.body.type||"undefine"
+                        type: req.body.type || "undefine"
                     }
                 )
                 await room.save()
@@ -277,7 +277,21 @@ teacherRouter.post("/createroom", async (req, res) => {
                 )
                 await session.save()
                 const students = req.io.of('/students');
-                students.to(req.body.specialist).emit('create-room',room)
+                students.to(req.body.specialist).emit('create-room', room)
+                let ModuleStudent = await Student.find({ specialist: req.body.specialist })
+                for (let i = 0; i < ModuleStudent.length; i++) {
+                    let newNotification = new Notification(
+                        {
+                            idStudent: ModuleStudent[i].id,
+                            idTeacher: findTeacher.id,
+                            idRoom: room.id,
+                            type: "createRoom",
+                            module: req.body.module || findTeacher.specialist,
+                            date: new Date()
+                        }
+                    )
+                    await newNotification.save()
+                }
                 res.json(
                     {
                         res: true,
