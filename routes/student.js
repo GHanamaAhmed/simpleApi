@@ -1,6 +1,6 @@
 const studentRouter = require('express').Router();
 const { Promise } = require('mongoose');
-const { Student, Teacher, EmailVerification, Session, Room, Attendance } = require('../database/database');
+const { Student, Teacher, EmailVerification, Session, Room, Attendance,Notifications } = require('../database/database');
 const { schemaSignin, schemaStudent, schemaTeacher, schemaauth, schemaJoinRoom, schemaStudentUpdate } = require('../validate/validate');
 const nodemailer = require("nodemailer");
 const { promises } = require('nodemailer/lib/xoauth2');
@@ -378,7 +378,7 @@ studentRouter.post("/notification", async (req, res) => {
                 mes: "Email or password not correct!"
             })
         } else {
-            let findNotification = await Notification.find({ idStudent: findStudent.id })
+            let findNotification = await Notifications.find({ idStudent: findStudent.id })
             let find = await Promise.all(findNotification.map(async (e) => {
                let t= await Teacher.findById(e.idTeacher)
                 return {

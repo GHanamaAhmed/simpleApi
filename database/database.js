@@ -151,7 +151,7 @@ const Attendance = mongoose.model("attendance", new mongoose.Schema(
         },
     }
 ))
-const Notification = mongoose.model("notification", new mongoose.Schema(
+const Notifications = mongoose.model("notification", new mongoose.Schema(
     {
         idRoom: {
             type: String,
@@ -180,4 +180,4 @@ const Notification = mongoose.model("notification", new mongoose.Schema(
         },
     }
 ));
-module.exports = { Student, Teacher, Specialist, EmailVerification, Room, Session, Attendance, Notification }
+module.exports = { Student, Teacher, Specialist, EmailVerification, Room, Session, Attendance, Notifications }

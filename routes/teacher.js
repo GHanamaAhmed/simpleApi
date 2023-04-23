@@ -1,5 +1,5 @@
 const teacherRouter = require('express').Router();
-const { Teacher, EmailVerification, Room, Session, Student,Notification } = require('../database/database');
+const { Teacher, EmailVerification, Room, Session, Student,Notifications } = require('../database/database');
 const { schemaSignin, schemaStudent, schemaTeacher, schemaauth, schemaJoinRoom, schemaeditRoom } = require('../validate/validate');
 const nodemailer = require("nodemailer");
 const { date } = require('joi');
@@ -280,7 +280,7 @@ teacherRouter.post("/createroom", async (req, res) => {
                 students.to(req.body.specialist).emit('create-room', room)
                 let ModuleStudent = await Student.find({ specialist: req.body.specialist })
                 for (let i = 0; i < ModuleStudent.length; i++) {
-                    let newNotification = new Notification(
+                    let newNotification = new Notifications(
                         {
                             idStudent: ModuleStudent[i].id,
                             idTeacher: findTeacher.id,
