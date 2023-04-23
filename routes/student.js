@@ -379,11 +379,21 @@ studentRouter.post("/notification", async (req, res) => {
             })
         } else {
             let findNotification = await Notification.find({ idStudent: findStudent.id })
+            let find = await Promise.all(findNotification.map(async (e) => {
+               let t= await Teacher.findById(e.idTeacher)
+                return {
+                    id: e.id,
+                    idTeacher: e.idTeacher,
+                    name: t.firstname+" "+t.lastname,
+                    module: e.module,
+                    date: e.date,
+                }
+            }))
             res.json(
                 {
                     res: true,
                     mes: "succsuful",
-                    data: findNotification
+                    data: find
                 }
             )
 
