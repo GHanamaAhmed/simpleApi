@@ -387,6 +387,7 @@ studentRouter.post("/notification", async (req, res) => {
                     name: t.firstname+" "+t.lastname,
                     module: e.module,
                     date: e.date,
+                    type: e.type,
                 }
             }))
             res.json(
