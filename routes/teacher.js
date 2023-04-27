@@ -127,7 +127,7 @@ teacherRouter.post("/auth", async (req, res) => {
                 let mailOption = {
                     from: "ghanamaahmed@gmail.com",
                     to: req.body.email,
-                    subject: 'Sending Email using Node.js',
+                    subject: 'Authentcation Code',
                     text: 'Code : ' + code
                 }
                 transport.sendMail(mailOption, (err, info) => {
@@ -180,13 +180,13 @@ teacherRouter.post("/reauth", async (req, res) => {
                     service: "gmail",
                     auth: {
                         user: "ghanamaahmed@gmail.com",
-                        pass: "uqkeeqfxhqbsiqmg"
+                        pass: process.env.SECURE_APP
                     }
                 })
                 let mailOption = {
                     from: "ghanamaahmed@gmail.com",
                     to: req.body.email,
-                    subject: 'Sending Email using Node.js',
+                    subject: 'Authentcation Code',
                     text: 'Code : ' + code
                 }
                 transport.sendMail(mailOption, (err, info) => {
