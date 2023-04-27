@@ -165,7 +165,7 @@ studentRouter.post("/auth", async (req, res) => {
                 })
                 let code = Math.floor(1000 + Math.random() * 9000);
                 let mailOption = {
-                    from: "emaileremail2@gmail.com",
+                    from: "ghanamaahmed@gmail.com",
                     to: req.body.email,
                     subject: 'Authentcation Code',
                     text: 'Code : ' + code
