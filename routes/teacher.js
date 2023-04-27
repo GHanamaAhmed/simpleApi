@@ -120,7 +120,7 @@ teacherRouter.post("/auth", async (req, res) => {
                     service: "gmail",
                     auth: {
                         user: "ghanamaahmed@gmail.com",
-                        pass: "uqkeeqfxhqbsiqmg"
+                        pass: process.env.SECURE_APP
                     }
                 })
                 let code = Math.floor(1000 + Math.random() * 9000);
