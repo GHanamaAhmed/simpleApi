@@ -1,6 +1,6 @@
 const studentRouter = require('express').Router();
 const { Promise } = require('mongoose');
-const { Student, Teacher, EmailVerification, Session, Room, Attendance,Notifications } = require('../database/database');
+const { Student, Teacher, EmailVerification, Session, Room, Attendance, Notifications } = require('../database/database');
 const { schemaSignin, schemaStudent, schemaTeacher, schemaauth, schemaJoinRoom, schemaStudentUpdate } = require('../validate/validate');
 const nodemailer = require("nodemailer");
 const { promises } = require('nodemailer/lib/xoauth2');
@@ -159,15 +159,15 @@ studentRouter.post("/auth", async (req, res) => {
                 let transport = nodemailer.createTransport({
                     service: "gmail",
                     auth: {
-                        user: "ghanamaahmed@gmail.com",
-                        pass: "uqkeeqfxhqbsiqmg"
+                        user: "emaileremail2@gmail.com",
+                        pass: "ebuzczrivdugpmua"
                     }
                 })
                 let code = Math.floor(1000 + Math.random() * 9000);
                 let mailOption = {
-                    from: "ghanamaahmed@gmail.com",
+                    from: "emaileremail2@gmail.com",
                     to: req.body.email,
-                    subject: 'Sending Email using Node.js',
+                    subject: 'Authentification',
                     text: 'Code : ' + code
                 }
                 transport.sendMail(mailOption, (err, info) => {
@@ -380,11 +380,11 @@ studentRouter.post("/notification", async (req, res) => {
         } else {
             let findNotification = await Notifications.find({ idStudent: findStudent.id })
             let find = await Promise.all(findNotification.map(async (e) => {
-               let t= await Teacher.findById(e.idTeacher)
+                let t = await Teacher.findById(e.idTeacher)
                 return {
                     id: e.id,
                     idTeacher: e.idTeacher,
-                    name: t.firstname+" "+t.lastname,
+                    name: t.firstname + " " + t.lastname,
                     module: e.module,
                     date: e.date,
                     type: e.type,
