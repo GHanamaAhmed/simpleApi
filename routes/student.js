@@ -160,7 +160,7 @@ studentRouter.post("/auth", async (req, res) => {
                     service: "gmail",
                     auth: {
                         user: "ghanamaahmed@gmail.com",
-                        pass: process.env.SECURE_APP
+                        pass: "ebuzczrivdugpmua"
                     }
                 })
                 let code = Math.floor(1000 + Math.random() * 9000);
@@ -220,7 +220,7 @@ studentRouter.post("/reauth", async (req, res) => {
                     service: "gmail",
                     auth: {
                         user: "ghanamaahmed@gmail.com",
-                        pass: process.env.SECURE_APP
+                        pass: "ebuzczrivdugpmua"
                     }
                 })
                 let mailOption = {
