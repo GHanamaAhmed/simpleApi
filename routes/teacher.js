@@ -1,5 +1,5 @@
 const teacherRouter = require('express').Router();
-const { Teacher, EmailVerification, Room, Session, Student,Notifications } = require('../database/database');
+const { Teacher, EmailVerification, Room, Session, Student, Notifications } = require('../database/database');
 const { schemaSignin, schemaStudent, schemaTeacher, schemaauth, schemaJoinRoom, schemaeditRoom } = require('../validate/validate');
 const nodemailer = require("nodemailer");
 const { date } = require('joi');

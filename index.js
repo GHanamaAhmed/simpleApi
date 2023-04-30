@@ -4,6 +4,7 @@ const PORT = 3000;
 app.set("port", process.env.PORT || PORT);
 const bodyPparser = require('body-parser');
 const helmet = require('helmet');
+const cors = require('cors');
 const mongoose = require('mongoose');
 const { studentRouter } = require('./routes/student');
 const { teacherRouter } = require('./routes/teacher');
@@ -17,6 +18,7 @@ const students = io.of('/students');
 mongoose.set("strictQuery", false)
 const url = "mongodb://127.0.0.1:27017/mobile";
 //middleware
+app.use(cors())
 app.use(helmet())
 app.use(bodyPparser.urlencoded({ extended: true }))
 //Authentication before connect to Socket.io
