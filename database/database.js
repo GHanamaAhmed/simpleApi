@@ -122,7 +122,10 @@ const Room = mongoose.model("room", new mongoose.Schema(
         createAt: {
             type: Date,
             default: new Date().toLocaleString()
-        }
+        },
+        schoolYear: {
+            type: String,
+        },
     }
 ))
 const Session = mongoose.model("Session", new mongoose.Schema(

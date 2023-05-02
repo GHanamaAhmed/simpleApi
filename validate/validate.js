@@ -53,6 +53,8 @@ var schemaJoinRoom=joi.object({
     module:joi.string(),
     type:joi.string().valid('Cour', 'Td','Tp'),
     specialist:joi.string(),
+    code:joi.number(),
+    schoolYear:joi.string().valid('1 licence', '1 licence','2 licence','3 licence','1 master','2 master'),
 })
 var schemaeditRoom=joi.object({
     email:joi.string().email().required(),
