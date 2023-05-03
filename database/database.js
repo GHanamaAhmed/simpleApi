@@ -126,6 +126,9 @@ const Room = mongoose.model("room", new mongoose.Schema(
         schoolYear: {
             type: String,
         },
+        specialist:{
+            type: String
+        }
     }
 ))
 const Session = mongoose.model("Session", new mongoose.Schema(

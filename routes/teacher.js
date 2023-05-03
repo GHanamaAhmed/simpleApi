@@ -269,6 +269,7 @@ teacherRouter.post("/createroom", async (req, res) => {
                         type: req.body.type || "undefine",
                         code:req.body.code || "undefine",
                         schoolYear:req.body.schoolYear || "undefine",
+                        specialist:req.body.specialist||"undefine"
                     }
                 )
                 await room.save()
