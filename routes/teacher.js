@@ -364,6 +364,7 @@ teacherRouter.delete("/deletroom", async (req, res) => {
                 mes: "Email or password not correct!"
             })
         } else {
+            await Notifications.find({ idRoom: req.body.idroom }).deleteMany()
             await Attendance.find({ idRoom: req.body.idroom }).deleteMany()
             await Room.findByIdAndDelete(req.body.idroom)
             res.json(
