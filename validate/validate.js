@@ -17,6 +17,7 @@ var schemaStudentUpdate=joi.object({
     lastname:joi.string().required().min(1).max(20),
     email:joi.string().email().required(),
     password:joi.string().max(20).min(8).required(),
+    rpassword:joi.string().max(20).min(8).required(),
     faculte: joi.string().required(),
     department : joi.string().required(),
     specialist : joi.string().required(),
