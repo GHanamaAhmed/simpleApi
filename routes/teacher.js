@@ -346,6 +346,49 @@ teacherRouter.post("/stoproom", async (req, res) => {
         }
     }
 })
+teacherRouter.post("/startroom", async (req, res) => {
+    const { error, value } = schemaeditRoom.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        let findTeacher = await Teacher.findOne({ email: req.body.email, password: req.body.password })
+        if (findTeacher == null) {
+            res.json({
+                res: false,
+                mes: "Email or password not correct!"
+            })
+        } else {
+            let room = await Room.findById(req.body.idroom)
+            if (room == null) {
+                res.json(
+                    {
+                        res: false,
+                        mes: "This room not exist!"
+                    }
+                )
+            } else {
+                let session = await Session.findOne({ idRoom: room.id })
+                if (session == null) {
+                    res.json(
+                        {
+                            res: false,
+                            mes: "This session is ended"
+                        }
+                    )
+                } else {
+                    await Session.findByIdAndUpdate(session.id, { $set: { status: true } })
+                    res.json({
+                        res: true,
+                        mes: "Session started"
+                    })
+                }
+            }
+        }
+    }
+})
 teacherRouter.delete("/deletroom", async (req, res) => {
     const { error, value } = schemaeditRoom.validate(req.body)
     if (error) {
