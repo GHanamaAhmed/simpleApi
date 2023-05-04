@@ -60,6 +60,6 @@ var schemaJoinRoom=joi.object({
 var schemaeditRoom=joi.object({
     email:joi.string().email().required(),
     password:joi.string().max(20).min(8).required(),
-    idroom:joi.string()
+    idroom:joi.any()
 })
 module.exports={schemaTeacher,schemaStudent,schemaSignin,schemaSpecialist,schemaauth,schemaJoinRoom,schemaeditRoom,schemaStudentUpdate}
