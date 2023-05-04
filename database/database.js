@@ -137,7 +137,7 @@ const Session = mongoose.model("Session", new mongoose.Schema(
             type: String,
             required: true
         },
-        isStatut: {
+        status: {
             type: Boolean,
             default: true
         },

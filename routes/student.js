@@ -297,7 +297,7 @@ studentRouter.post("/joinroom", async (req, res) => {
                         mes: "This room session has ended"
                     })
                 } else {
-                    if (findSession.isStatut===true) {
+                    if (findSession.status) {
                         let finattandance = await Attendance.findOne({ idRoom: findSession.idRoom, idStudent: findStudent.id });
                         if (finattandance != null) {
                             res.json({
