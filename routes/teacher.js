@@ -321,7 +321,7 @@ teacherRouter.post("/removeStudents", async (req, res) => {
         } else {
             let idStudents = req.body.idstudent
             await Promise.all(idStudents.map(async e => {
-                await Attendance.find({ idStudent: e }).deleteMany()
+                await Attendance.find({ idStudent: e,idRoom:req.body.idroom }).deleteMany()
             }))
             res.json({
                 res: true,
@@ -330,7 +330,29 @@ teacherRouter.post("/removeStudents", async (req, res) => {
         }
     }
 })
-
+teacherRouter.post("/removeStudent", async (req, res) => {
+    const { error } = schemaRemoveStudent.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        let findTeacher = await Teacher.findOne({ email: req.body.email, password: req.body.password })
+        if (findTeacher == null) {
+            res.json({
+                res: false,
+                mes: "Email or password not correct!"
+            })
+        } else {
+            await Attendance.find({ idStudent: req.body.idstudent,idRoom:req.body.idroom }).deleteMany()
+            res.json({
+                res: true,
+                mes: "Students removed successfully"
+            })
+        }
+    }
+})
 
 teacherRouter.post("/stoproom", async (req, res) => {
     const { error, value } = schemaeditRoom.validate(req.body)
