@@ -378,7 +378,7 @@ studentRouter.post("/joinCode", async (req, res) => {
                 res.json(
                     {
                         res: false,
-                        mes: "This room not exist"
+                        mes: "This room does't exist"
                     }
                 )
             }
@@ -472,26 +472,19 @@ studentRouter.get("/session/:idroom", async (req, res) => {
                     mes: "The room does not exist!"
                 })
             } else {
-                let findSession = await Session.findOne({ idRoom: findRoom.id })
-                if (findSession == null) {
-                    res.json({
-                        res: false,
-                        mes: "The room session has be ended"
-                    })
-                } else {
-                    let attandance = await Attendance.find({ idRoom: findSession.idRoom })
-                    let students = await Promise.all(attandance.map(async e => {
-                        let student = await Student.findById(e.idStudent)
-                        return { firstname: student.firstname, lastname: student.lastname, idStudent: student.id, specialist: student.specialist, sex: student.sex }
-                    }));
-                    res.json(
-                        {
-                            res: true,
-                            mes: "succssful",
-                            data: students
-                        }
-                    )
-                }
+                let attandance = await Attendance.find({ idRoom: findRoom.id })
+                let students = await Promise.all(attandance.map(async e => {
+                    let student = await Student.findById(e.idStudent)
+                    return { firstname: student.firstname, lastname: student.lastname, idStudent: student.id, specialist: student.specialist, sex: student.sex }
+                }));
+                res.json(
+                    {
+                        res: true,
+                        mes: "succssful",
+                        data: students
+                    }
+                )
+
             }
         } else {
             res.json(
