@@ -267,9 +267,9 @@ teacherRouter.post("/createroom", async (req, res) => {
                         module: req.body.module || findTeacher.specialist,
                         qrCode: req.body.qrcode,
                         type: req.body.type || "undefine",
-                        code:req.body.code || "undefine",
-                        schoolYear:req.body.schoolYear || "undefine",
-                        specialist:req.body.specialist||"undefine"
+                        code: req.body.code || "undefine",
+                        schoolYear: req.body.schoolYear || "undefine",
+                        specialist: req.body.specialist || "undefine"
                     }
                 )
                 await room.save()
@@ -367,6 +367,36 @@ teacherRouter.delete("/deletroom", async (req, res) => {
             await Notifications.find({ idRoom: req.body.idroom }).deleteMany()
             await Attendance.find({ idRoom: req.body.idroom }).deleteMany()
             await Room.findByIdAndDelete(req.body.idroom)
+            res.json(
+                {
+                    res: false,
+                    mes: "Deleted succssfully"
+                }
+            )
+        }
+    }
+})
+teacherRouter.delete("/deletrooms", async (req, res) => {
+    const { error, value } = schemaeditRoom.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        let findTeacher = await Teacher.findOne({ email: req.body.email, password: req.body.password })
+        if (findTeacher == null) {
+            res.json({
+                res: false,
+                mes: "Email or password not correct!"
+            })
+        } else {
+            let idRooms = req.body.idroom
+            await Promise.all(idRooms.map(async e => {
+                await Notifications.find({ idRoom: e }).deleteMany()
+                await Attendance.find({ idRoom: e }).deleteMany()
+                await Room.findByIdAndDelete(e)
+            }))
             res.json(
                 {
                     res: false,
