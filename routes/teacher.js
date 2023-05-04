@@ -369,7 +369,7 @@ teacherRouter.delete("/deletroom", async (req, res) => {
             await Room.findByIdAndDelete(req.body.idroom)
             res.json(
                 {
-                    res: false,
+                    res: true,
                     mes: "Deleted succssfully"
                 }
             )
@@ -399,7 +399,7 @@ teacherRouter.delete("/deletrooms", async (req, res) => {
             }))
             res.json(
                 {
-                    res: false,
+                    res: true,
                     mes: "Deleted succssfully"
                 }
             )
