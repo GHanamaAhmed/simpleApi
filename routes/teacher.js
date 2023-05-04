@@ -268,7 +268,7 @@ teacherRouter.post("/createroom", async (req, res) => {
                         module: req.body.module || findTeacher.specialist,
                         qrCode: req.body.qrcode,
                         type: req.body.type || "undefine",
-                        code: req.body.code || "undefine",
+                        code: req.body.code ,
                         schoolYear: req.body.schoolYear || "undefine",
                         specialist: req.body.specialist || "undefine"
                     }
@@ -301,44 +301,6 @@ teacherRouter.post("/createroom", async (req, res) => {
                         res: true,
                         mes: "Rom created successfully",
                         data: room
-                    }
-                )
-            }
-        }
-    }
-})
-teacherRouter.post("/generateCode", async (req, res) => {
-    const { error, value } = createCode.validate(req.body)
-    if (error) {
-        res.json({
-            res: false,
-            mes: error.message
-        })
-    } else {
-        let findTeacher = await Teacher.findOne({ email: req.body.email, password: req.body.password })
-        if (findTeacher == null) {
-            res.json({
-                res: false,
-                mes: "Email or password not correct!"
-            })
-        } else {
-            let findrooms = await Room.find({ qrCode: req.body.qrcode })
-            if (findrooms.length < 0) {
-                res.json(
-                    {
-                        res: false,
-                        mes: "this qr code not exist!",
-                    }
-                )
-            } else {
-                
-                await Room.findOneAndUpdate({ id: req.body.idroom }, { $set: { code: req.body.code } })
-                let findrooms1 = await Room.find({ qrCode: req.body.qrcode })
-                res.json(
-                    {
-                        res: true,
-                        mes: "Code is generated successfully",
-                        data: findrooms1
                     }
                 )
             }
