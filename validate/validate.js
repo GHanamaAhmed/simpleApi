@@ -62,11 +62,4 @@ var schemaeditRoom=joi.object({
     password:joi.string().max(20).min(8).required(),
     idroom:joi.any()
 })
-var createCode=joi.object({
-    email:joi.string().email().required(),
-    password:joi.string().max(20).min(8).required(),
-    idroom:joi.any(),
-    code:joi.number().required()
-})
-
-module.exports={createCode,schemaTeacher,schemaStudent,schemaSignin,schemaSpecialist,schemaauth,schemaJoinRoom,schemaeditRoom,schemaStudentUpdate}
+module.exports={schemaTeacher,schemaStudent,schemaSignin,schemaSpecialist,schemaauth,schemaJoinRoom,schemaeditRoom,schemaStudentUpdate}

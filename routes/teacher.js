@@ -1,11 +1,7 @@
 const teacherRouter = require('express').Router();
 const { Teacher, EmailVerification, Room, Session, Student, Notifications, Attendance } = require('../database/database');
-const { schemaSignin, schemaStudent, schemaTeacher, schemaauth, schemaJoinRoom, schemaeditRoom, createCode } = require('../validate/validate');
+const { schemaSignin, schemaTeacher, schemaauth, schemaJoinRoom, schemaeditRoom} = require('../validate/validate');
 const nodemailer = require("nodemailer");
-const { date } = require('joi');
-const { default: room } = require('../../../students-attendance/src/rooms/room');
-
-
 //Sign up Teacher
 teacherRouter.post("/signup", async (req, res) => {
     const { value, error } = schemaTeacher.validate(req.body)
