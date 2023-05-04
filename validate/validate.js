@@ -62,4 +62,10 @@ var schemaeditRoom=joi.object({
     password:joi.string().max(20).min(8).required(),
     idroom:joi.any()
 })
+var schemaRemoveStudent=joi.object({
+    email:joi.string().email().required(),
+    password:joi.string().max(20).min(8).required(),
+    idroom:joi.any().required(),
+    idstudent:joi.any().required()
+})
 module.exports={schemaTeacher,schemaStudent,schemaSignin,schemaSpecialist,schemaauth,schemaJoinRoom,schemaeditRoom,schemaStudentUpdate}

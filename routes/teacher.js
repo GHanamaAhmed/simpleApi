@@ -1,6 +1,6 @@
 const teacherRouter = require('express').Router();
 const { Teacher, EmailVerification, Room, Session, Student, Notifications, Attendance } = require('../database/database');
-const { schemaSignin, schemaTeacher, schemaauth, schemaJoinRoom, schemaeditRoom} = require('../validate/validate');
+const { schemaSignin, schemaTeacher, schemaauth, schemaJoinRoom, schemaeditRoom } = require('../validate/validate');
 const nodemailer = require("nodemailer");
 //Sign up Teacher
 teacherRouter.post("/signup", async (req, res) => {
@@ -264,7 +264,7 @@ teacherRouter.post("/createroom", async (req, res) => {
                         module: req.body.module || findTeacher.specialist,
                         qrCode: req.body.qrcode,
                         type: req.body.type || "undefine",
-                        code: req.body.code ,
+                        code: req.body.code,
                         schoolYear: req.body.schoolYear || "undefine",
                         specialist: req.body.specialist || "undefine"
                     }
@@ -303,6 +303,35 @@ teacherRouter.post("/createroom", async (req, res) => {
         }
     }
 })
+//remove students from attendence
+teacherRouter.post("/removeStudents", async (req, res) => {
+    const { error } = schemaRemoveStudent.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        let findTeacher = await Teacher.findOne({ email: req.body.email, password: req.body.password })
+        if (findTeacher == null) {
+            res.json({
+                res: false,
+                mes: "Email or password not correct!"
+            })
+        } else {
+            let idStudents = req.body.idstudent
+            await Promise.all(idStudents.map(async e => {
+                await Attendance.find({ idStudent: e }).deleteMany()
+            }))
+            res.json({
+                res: true,
+                mes: "Students removed successfully"
+            })
+        }
+    }
+})
+
+
 teacherRouter.post("/stoproom", async (req, res) => {
     const { error, value } = schemaeditRoom.validate(req.body)
     if (error) {
