@@ -336,7 +336,7 @@ teacherRouter.post("/stoproom", async (req, res) => {
                         }
                     )
                 } else {
-                    await Session.deleteOne({ idRoom: room.id })
+                    await Session.findByIdAndUpdate(session.id, { $set: { status: false } })
                     res.json({
                         res: true,
                         mes: "Session ended"

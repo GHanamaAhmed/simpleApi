@@ -137,6 +137,10 @@ const Session = mongoose.model("Session", new mongoose.Schema(
             type: String,
             required: true
         },
+        isStatut: {
+            type: Boolean,
+            default: true
+        },
         // createAt: {
         //     type: Date,
         //     default: Date.now,

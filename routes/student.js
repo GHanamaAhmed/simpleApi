@@ -297,24 +297,31 @@ studentRouter.post("/joinroom", async (req, res) => {
                         mes: "This room session has ended"
                     })
                 } else {
-                    let finattandance = await Attendance.findOne({ idRoom: findSession.idRoom, idStudent: findStudent.id });
-                    if (finattandance != null) {
+                    if (findSession.isStatut) {
+                        let finattandance = await Attendance.findOne({ idRoom: findSession.idRoom, idStudent: findStudent.id });
+                        if (finattandance != null) {
+                            res.json({
+                                res: true,
+                                mes: "Attended",
+                                data: finattandance
+                            })
+                        } else {
+                            let attandance = new Attendance({ idRoom: findSession.idRoom, idStudent: findStudent.id })
+                            await attandance.save()
+                            const rooms = req.io.of('/rooms');
+                            const students = req.io.of('/students');
+                            rooms.to(findSession.idRoom).emit('join', { firstname: findStudent.firstname, lastname: findStudent.lastname, idStudent: findStudent.id, specialist: findStudent.specialist, sex: findStudent.sex });
+                            students.to(findStudent.email).emit('add-r', findRoom)
+                            res.json({
+                                res: true,
+                                mes: "Attended",
+                                data: attandance
+                            })
+                        }
+                    }else{
                         res.json({
-                            res: true,
-                            mes: "Attended",
-                            data: finattandance
-                        })
-                    } else {
-                        let attandance = new Attendance({ idRoom: findSession.idRoom, idStudent: findStudent.id })
-                        await attandance.save()
-                        const rooms = req.io.of('/rooms');
-                        const students = req.io.of('/students');
-                        rooms.to(findSession.idRoom).emit('join', { firstname: findStudent.firstname, lastname: findStudent.lastname, idStudent: findStudent.id, specialist: findStudent.specialist, sex: findStudent.sex });
-                        students.to(findStudent.email).emit('add-r', findRoom)
-                        res.json({
-                            res: true,
-                            mes: "Attended",
-                            data: attandance
+                            res: false,
+                            mes: "This room session has ended"
                         })
                     }
                 }
