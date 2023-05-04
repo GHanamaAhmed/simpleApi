@@ -68,4 +68,4 @@ var schemaRemoveStudent=joi.object({
     idroom:joi.any().required(),
     idstudent:joi.any().required()
 })
-module.exports={schemaTeacher,schemaStudent,schemaSignin,schemaSpecialist,schemaauth,schemaJoinRoom,schemaeditRoom,schemaStudentUpdate}
+module.exports={schemaTeacher,schemaRemoveStudent,schemaStudent,schemaSignin,schemaSpecialist,schemaauth,schemaJoinRoom,schemaeditRoom,schemaStudentUpdate}
