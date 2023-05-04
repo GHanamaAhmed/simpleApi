@@ -304,7 +304,7 @@ teacherRouter.post("/createroom", async (req, res) => {
     }
 })
 //remove students from attendence
-teacherRouter.post("/removeStudents", async (req, res) => {
+teacherRouter.delete("/removeStudents", async (req, res) => {
     const { error } = schemaRemoveStudent.validate(req.body)
     if (error) {
         res.json({
@@ -330,7 +330,7 @@ teacherRouter.post("/removeStudents", async (req, res) => {
         }
     }
 })
-teacherRouter.post("/removeStudent", async (req, res) => {
+teacherRouter.delete("/removeStudent", async (req, res) => {
     const { error } = schemaRemoveStudent.validate(req.body)
     if (error) {
         res.json({
