@@ -1,8 +1,9 @@
 const teacherRouter = require('express').Router();
 const { Teacher, EmailVerification, Room, Session, Student, Notifications, Attendance } = require('../database/database');
-const { schemaSignin, schemaStudent, schemaTeacher, schemaauth, schemaJoinRoom, schemaeditRoom } = require('../validate/validate');
+const { schemaSignin, schemaStudent, schemaTeacher, schemaauth, schemaJoinRoom, schemaeditRoom, createCode } = require('../validate/validate');
 const nodemailer = require("nodemailer");
 const { date } = require('joi');
+const { default: room } = require('../../../students-attendance/src/rooms/room');
 
 
 //Sign up Teacher
@@ -300,6 +301,44 @@ teacherRouter.post("/createroom", async (req, res) => {
                         res: true,
                         mes: "Rom created successfully",
                         data: room
+                    }
+                )
+            }
+        }
+    }
+})
+teacherRouter.post("/generateCode", async (req, res) => {
+    const { error, value } = createCode.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        let findTeacher = await Teacher.findOne({ email: req.body.email, password: req.body.password })
+        if (findTeacher == null) {
+            res.json({
+                res: false,
+                mes: "Email or password not correct!"
+            })
+        } else {
+            let findrooms = await Room.find({ qrCode: req.body.qrcode })
+            if (findrooms.length < 0) {
+                res.json(
+                    {
+                        res: false,
+                        mes: "this qr code not exist!",
+                    }
+                )
+            } else {
+                
+                await Room.findOneAndUpdate({ id: req.body.idroom }, { $set: { code: req.body.code } })
+                let findrooms1 = await Room.find({ qrCode: req.body.qrcode })
+                res.json(
+                    {
+                        res: true,
+                        mes: "Code is generated successfully",
+                        data: findrooms1
                     }
                 )
             }

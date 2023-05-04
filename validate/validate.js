@@ -50,7 +50,7 @@ var schemaauth=joi.object({
 var schemaJoinRoom=joi.object({
     email:joi.string().email().required(),
     password:joi.string().max(20).min(8).required(),
-    qrcode:joi.string().required(),
+    qrcode:joi.string(),
     module:joi.string(),
     type:joi.string().valid('Cour', 'Td','Tp'),
     specialist:joi.string(),
@@ -62,4 +62,11 @@ var schemaeditRoom=joi.object({
     password:joi.string().max(20).min(8).required(),
     idroom:joi.any()
 })
-module.exports={schemaTeacher,schemaStudent,schemaSignin,schemaSpecialist,schemaauth,schemaJoinRoom,schemaeditRoom,schemaStudentUpdate}
+var createCode=joi.object({
+    email:joi.string().email().required(),
+    password:joi.string().max(20).min(8).required(),
+    idroom:joi.any(),
+    code:joi.number().required()
+})
+
+module.exports={createCode,schemaTeacher,schemaStudent,schemaSignin,schemaSpecialist,schemaauth,schemaJoinRoom,schemaeditRoom,schemaStudentUpdate}
