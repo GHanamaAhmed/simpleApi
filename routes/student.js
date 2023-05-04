@@ -496,7 +496,8 @@ studentRouter.get("/session/:idroom", async (req, res) => {
                     {
                         res: true,
                         mes: "succssful",
-                        data: students
+                        data: students,
+                        room: findRoom
                     }
                 )
 
