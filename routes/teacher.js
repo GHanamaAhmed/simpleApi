@@ -321,7 +321,7 @@ teacherRouter.delete("/removeStudents", async (req, res) => {
         } else {
             let idStudents = req.body.idstudent
             await Promise.all(idStudents.map(async e => {
-                await Attendance.find({ idStudent: e,idRoom:req.body.idroom }).deleteMany()
+                await Attendance.find({ idStudent: e, idRoom: req.body.idroom }).deleteMany()
             }))
             res.json({
                 res: true,
@@ -345,7 +345,9 @@ teacherRouter.delete("/removeStudent", async (req, res) => {
                 mes: "Email or password not correct!"
             })
         } else {
-            await Attendance.find({ idStudent: req.body.idstudent,idRoom:req.body.idroom }).deleteMany()
+            await Attendance.find({ idStudent: req.body.idstudent, idRoom: req.body.idroom }).deleteMany()
+            const rooms = req.io.of('/rooms');
+            rooms.to(req.body.idRoom).emit('remove', {idStudent: findStudent.id,  idRoom: req.body.idroom});
             res.json({
                 res: true,
                 mes: "Students removed successfully"
