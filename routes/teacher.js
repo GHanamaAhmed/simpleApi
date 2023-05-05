@@ -347,7 +347,7 @@ teacherRouter.delete("/removeStudent", async (req, res) => {
         } else {
             await Attendance.find({ idStudent: req.body.idstudent, idRoom: req.body.idroom }).deleteMany()
             const rooms = req.io.of('/rooms');
-            rooms.to(req.body.idRoom).emit('remove', {idStudent: findStudent.id,  idRoom: req.body.idroom});
+            rooms.to(req.body.idRoom).emit('remove', {idStudent: req.body.idStudent,  idRoom: req.body.idroom});
             res.json({
                 res: true,
                 mes: "Students removed successfully"
