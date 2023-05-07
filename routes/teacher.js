@@ -228,7 +228,7 @@ teacherRouter.post("/allSeasons", async (req, res) => {
             const attendences=await Promise.all(rooms.map(async e=>{
                 let obj={
                     room:e,
-                    attendence:Attendance.find({idRoom:e.id})
+                    attendence:await Attendance.find({idRoom:e.id})
                 }
                 return obj
             } ))
