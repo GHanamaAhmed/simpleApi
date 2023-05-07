@@ -209,7 +209,7 @@ teacherRouter.post("/reauth", async (req, res) => {
     }
 
 })
-teacherRouter.post("seasonsall", async (req, res) => {
+teacherRouter.post("/allSeasons", async (req, res) => {
     const { error, value } = schemaSignin.validate(req.body)
     if (error) {
         res.json({
