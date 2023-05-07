@@ -216,27 +216,31 @@ teacherRouter.post("/allSeasons", async (req, res) => {
             res: false,
             mes: error.message
         })
-    }else{
-        const teacher=await Teacher.findOne({email:req.body.email,password:req.body.password})
-        if (teacher==null) {
+    } else {
+        const teacher = await Teacher.findOne({ email: req.body.email, password: req.body.password })
+        if (teacher == null) {
             res.json({
-                res:false,
-                mes:"Email or password not correct!"
-            }) 
-        }else{
-            const rooms=await Room.find({idTeacher:teacher.id})
-            const attendences=await Promise.all(rooms.map(async e=>{
-                let obj={
-                    room:e,
-                    attendence:await Attendance.find({idRoom:e.id})
+                res: false,
+                mes: "Email or password not correct!"
+            })
+        } else {
+            const rooms = await Room.find({ idTeacher: teacher.id })
+            const attendences = await Promise.all(rooms.map(async e => {
+                const att = await Attendance.find({ idRoom: e.id })
+                const students = await Promise.all(att.map(async e => {
+                    return await Student.findById(e.idStudent)
+                }))
+                let obj = {
+                    room: e,
+                    attendence: students
                 }
                 return obj
-            } ))
+            }))
             res.json({
-                res:true,
-                mes:"succssful",
-                data:attendences
-            })         
+                res: true,
+                mes: "succssful",
+                data: attendences
+            })
         }
     }
 })
