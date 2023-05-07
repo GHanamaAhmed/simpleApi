@@ -209,31 +209,39 @@ teacherRouter.post("/reauth", async (req, res) => {
     }
 
 })
-teacherRouter.post("/info", async (req, res) => {
+teacherRouter.post("allSeasons", async (req, res) => {
     const { error, value } = schemaSignin.validate(req.body)
     if (error) {
         res.json({
             res: false,
             mes: error.message
         })
-    } else {
-        let findteacher = await Teacher.findOne({ email: req.body.email, password: req.body.password })
-        if (findteacher == null) {
+    }else{
+        const teacher=await Teacher.findOne({email:req.body.email,password:req.body.password})
+        if (teacher==null) {
             res.json({
-                res: false,
-                mes: "Email or password not correct!"
-            })
-        } else {
-            res.json(
-                {
-                    res: true,
-                    mes: "succssful",
-                    data: findteacher
+                res:false,
+                mes:"Email or password not correct!"
+            }) 
+        }else{
+            const rooms=await Room.find({idTeacher:teacher.id})
+            const attendences=await Promise.all(rooms.map(async e=>{
+                let obj={
+                    room:e,
+                    attendence:Attendance.find({idRoom:e.id})
                 }
-            )
+                return obj
+            } ))
+            res.json({
+                res:true,
+                mes:"succssful",
+                data:attendences
+            })         
         }
     }
 })
+
+
 teacherRouter.post("/createroom", async (req, res) => {
     const { error, value } = schemaJoinRoom.validate(req.body)
     if (error) {
@@ -556,35 +564,5 @@ teacherRouter.post("/sessions", async (req, res) => {
         }
     }
 })
-teacherRouter.post("allSeasons", async (req, res) => {
-    const { error, value } = schemaSignin.validate(req.body)
-    if (error) {
-        res.json({
-            res: false,
-            mes: error.message
-        })
-    }else{
-        const teacher=await Teacher.findOne({email:req.body.email,password:req.body.password})
-        if (teacher==null) {
-            res.json({
-                res:false,
-                mes:"Email or password not correct!"
-            }) 
-        }else{
-            const rooms=await Room.find({idTeacher:teacher.id})
-            const attendences=await Promise.all(rooms.map(async e=>{
-                let obj={
-                    room:e,
-                    attendence:Attendance.find({idRoom:e.id})
-                }
-                return obj
-            } ))
-            res.json({
-                res:true,
-                mes:"succssful",
-                data:attendences
-            })         
-        }
-    }
-})
+
 module.exports = { teacherRouter }
