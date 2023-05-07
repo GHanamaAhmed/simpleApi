@@ -324,7 +324,7 @@ teacherRouter.delete("/removeStudents", async (req, res) => {
                 await Attendance.find({ idStudent: e, idRoom: req.body.idroom }).deleteMany()
             }))
             const rooms = req.io.of('/rooms');
-            rooms.to(req.body.idroom).emit('removes', {idStudent: idStudents,  idRoom: req.body.idroom});
+            rooms.to(req.body.idroom).emit('removes', { idStudent: idStudents, idRoom: req.body.idroom });
             res.json({
                 res: true,
                 mes: "Students removed successfully"
@@ -349,7 +349,7 @@ teacherRouter.delete("/removeStudent", async (req, res) => {
         } else {
             await Attendance.find({ idStudent: req.body.idstudent, idRoom: req.body.idroom }).deleteMany()
             const rooms = req.io.of('/rooms');
-            rooms.to(req.body.idroom).emit('remove', {idStudent: req.body.idstudent,  idRoom: req.body.idroom});
+            rooms.to(req.body.idroom).emit('remove', { idStudent: req.body.idstudent, idRoom: req.body.idroom });
             res.json({
                 res: true,
                 mes: "Students removed successfully"
@@ -553,6 +553,37 @@ teacherRouter.post("/sessions", async (req, res) => {
                     data: sessions
                 }
             )
+        }
+    }
+})
+teacherRouter.post("allSeasons", async (req, res) => {
+    const { error, value } = schemaSignin.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    }else{
+        const teacher=await Teacher.findOne({email:req.body.email,password:req.body.password})
+        if (teacher==null) {
+            res.json({
+                res:false,
+                mes:"Email or password not correct!"
+            }) 
+        }else{
+            const rooms=await Room.find({idTeacher:teacher.id})
+            const attendences=await Promise.all(rooms.map(async e=>{
+                let obj={
+                    room:e,
+                    attendence:Attendance.find({idRoom:e.id})
+                }
+                return obj
+            } ))
+            res.json({
+                res:true,
+                mes:"succssful",
+                data:attendences
+            })         
         }
     }
 })
