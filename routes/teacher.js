@@ -1,5 +1,5 @@
 const teacherRouter = require('express').Router();
-const { Teacher, EmailVerification, Room, Session, Student, Notifications, Attendance } = require('../database/database');
+const { Teacher, EmailVerification, Room, Session, Student, Notifications, Attendance, Specialist } = require('../database/database');
 const { schemaSignin, schemaTeacher, schemaauth, schemaJoinRoom, schemaeditRoom, schemaRemoveStudent } = require('../validate/validate');
 const nodemailer = require("nodemailer");
 //Sign up Teacher
@@ -568,5 +568,15 @@ teacherRouter.post("/sessions", async (req, res) => {
         }
     }
 })
-
+teacherRouter.get("getStudents", async (req, res) => {
+    let specialist = req.body.specialist
+    let students = await Student.find({ specialist: specialist })
+    res.json(
+        {
+            res: true,
+            mes: "succssful",
+            data: students
+        }
+    )
+})
 module.exports = { teacherRouter }
