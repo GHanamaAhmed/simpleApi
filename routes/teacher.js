@@ -1,4 +1,5 @@
 const teacherRouter = require('express').Router();
+const e = require('express');
 const { Teacher, EmailVerification, Room, Session, Student, Notifications, Attendance, Specialist } = require('../database/database');
 const { schemaSignin, schemaTeacher, schemasps, schemaauth, schemaJoinRoom, schemaeditRoom, schemaRemoveStudent } = require('../validate/validate');
 const nodemailer = require("nodemailer");
@@ -576,18 +577,22 @@ teacherRouter.post("/getStudents", async (req, res) => {
             mes: error.message
         })
     } else {
+        let all=[]
         let specialist = req.body.specialist
-        let students
-        await Promise.all(specialist.map(async e => {
+        let students = await Promise.all(specialist.map(async e => {
             let l = e.toLowerCase()
-            let student = await Student.find({ specialist: l })
-            students = [...students, ...student]
+            return await Student.find({ specialist: l })
         }))
+        students.forEach(e => {
+            e.forEach(e1 => {
+                all.push(e1)
+            })
+        })
         res.json(
             {
                 res: true,
                 mes: "succssful",
-                data: students
+                data: all
             }
         )
     }
