@@ -568,8 +568,8 @@ teacherRouter.post("/sessions", async (req, res) => {
         }
     }
 })
-teacherRouter.get("getStudents", async (req, res) => {
-    let specialist = req.body.specialist
+teacherRouter.get("/getStudents", async (req, res) => {
+    let specialist = req.query.specialist
     let students = await Student.find({ specialist: specialist })
     res.json(
         {
