@@ -1,6 +1,6 @@
 const teacherRouter = require('express').Router();
 const { Teacher, EmailVerification, Room, Session, Student, Notifications, Attendance, Specialist } = require('../database/database');
-const { schemaSignin, schemaTeacher, schemaauth, schemaJoinRoom, schemaeditRoom, schemaRemoveStudent } = require('../validate/validate');
+const { schemaSignin, schemaTeacher, schemasps, schemaauth, schemaJoinRoom, schemaeditRoom, schemaRemoveStudent } = require('../validate/validate');
 const nodemailer = require("nodemailer");
 //Sign up Teacher
 teacherRouter.post("/signup", async (req, res) => {
@@ -569,17 +569,27 @@ teacherRouter.post("/sessions", async (req, res) => {
     }
 })
 teacherRouter.post("/getStudents", async (req, res) => {
-    let specialist = req.body.specialist
-    let students =await Promise.all(specialist.map(async e => {
-        let l = e.toLowerCase()
-        return await Student.find({ specialist: l})
-    }))
-    res.json(
-        {
-            res: true,
-            mes: "succssful",
-            data: students
-        }
-    )
+    const { error } = schemasps.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        let specialist = req.body.specialist
+        let students
+        await Promise.all(specialist.map(async e => {
+            let l = e.toLowerCase()
+            let student = await Student.find({ specialist: l })
+            students = [...students, ...student]
+        }))
+        res.json(
+            {
+                res: true,
+                mes: "succssful",
+                data: students
+            }
+        )
+    }
 })
 module.exports = { teacherRouter }
