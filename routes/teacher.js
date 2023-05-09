@@ -568,9 +568,12 @@ teacherRouter.post("/sessions", async (req, res) => {
         }
     }
 })
-teacherRouter.get("/getStudents", async (req, res) => {
-    let specialist = req.query.specialist.toLowerCase()
-    let students = await Student.find({ specialist: specialist })
+teacherRouter.post("/getStudents", async (req, res) => {
+    let specialist = req.body.specialist
+    let students =await Promise.all(specialist.map(async e => {
+        let l = e.toLowerCase()
+        return await Student.find({ specialist: l})
+    }))
     res.json(
         {
             res: true,
