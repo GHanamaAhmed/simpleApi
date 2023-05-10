@@ -598,7 +598,7 @@ teacherRouter.post("/getStudents", async (req, res) => {
     }
 })
 teacherRouter.post("/sendMessage", async (req, res) => {
-    const { error } = schemasendMessage.validate(req.body)
+    const { error } = schemaSendStudent.validate(req.body)
     if (error) {
         res.json({
             res: false,
