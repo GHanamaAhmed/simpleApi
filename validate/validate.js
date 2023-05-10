@@ -76,6 +76,7 @@ var schemaSendStudent = joi.object({
     password: joi.string().max(20).min(8).required(),
     idStudent: joi.any().required(),
     absent: joi.number().required(),
+    module: joi.string().required(),
 })
 var schemaSendToAllStudent = joi.object({
     email: joi.string().email().required(),
