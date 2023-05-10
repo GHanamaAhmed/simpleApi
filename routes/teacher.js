@@ -1,7 +1,7 @@
 const teacherRouter = require('express').Router();
 const e = require('express');
 const { Teacher, EmailVerification, Room, Session, Student, Notifications, Attendance, Specialist } = require('../database/database');
-const { schemaSignin, schemaTeacher, schemasps, schemaauth, schemaJoinRoom, schemaeditRoom, schemaRemoveStudent } = require('../validate/validate');
+const { schemaSignin, schemaTeacher, schemaSendStudent, schemasps, schemaauth, schemaJoinRoom, schemaeditRoom, schemaRemoveStudent } = require('../validate/validate');
 const nodemailer = require("nodemailer");
 //Sign up Teacher
 teacherRouter.post("/signup", async (req, res) => {
@@ -577,7 +577,7 @@ teacherRouter.post("/getStudents", async (req, res) => {
             mes: error.message
         })
     } else {
-        let all=[]
+        let all = []
         let specialist = req.body.specialist
         let students = await Promise.all(specialist.map(async e => {
             let l = e.toLowerCase()
@@ -595,6 +595,91 @@ teacherRouter.post("/getStudents", async (req, res) => {
                 data: all
             }
         )
+    }
+})
+teacherRouter.post("/sendMessage", async (req, res) => {
+    const { error } = schemasendMessage.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        const teacher = await Teacher.findOne({ email: req.body.email, password: req.body.password })
+        if (teacher == null) {
+            res.json({
+                res: false,
+                mes: "Email or password not correct!"
+            })
+        } else {
+            const student = await Student.findOne({ id: req.body.idStudent })
+            if (student == null) {
+                res.json({
+                    res: false,
+                    mes: "Student not found!"
+                })
+            } else {
+                const Messege1 = `Dear ${student.lastname} ${student.firstname} , I hope this message finds you well. I noticed that you were absent from class recently, and I wanted to reach out and check in with you. If you have any questions or concerns about the course material, please don't hesitate to let me know. I am here to support you and help you succeed.Best regards,${teacher.lastname} ${teacher.firstname} `
+                const Message2 = `Dear ${student.lastname} ${student.firstname} , I am writing to remind you of the importance of attending all classes regularly. Missing even one class can have an impact on your academic performance and make it difficult to keep up with the course material. Please make every effort to attend all remaining classes and to catch up on any material you may have missed. Sincerely,${teacher.lastname} ${teacher.firstname}`
+                const Message3 = `Dear ${student.lastname} ${student.firstname} , It has come to my attention that you have been absent from [n] classes without any valid reason. Your frequent absences have not gone unnoticed, and I am disappointed to inform you that your behavior is unacceptable. Attendance is mandatory, and your lack of commitment is not only disrespectful to me but also to your fellow students. As a result of your continued absences, I am recommending your expulsion from the course. Please be aware that this decision is final, and you will not be able to re-enroll in the course. I wish you the best of luck in your future endeavors. Sincerely,${teacher.lastname} ${teacher.firstname}`
+                let transport = nodemailer.createTransport({
+                    service: "gmail",
+                    auth: {
+                        user: "ghanamaahmed@gmail.com",
+                        pass: "ebuzczrivdugpmua"
+                    }
+                })
+                let mailOption
+                if (req.body.absent == 1) {
+                    mailOption = {
+                        from: "ghanamaahmed@gmail.com",
+                        to: student.email,
+                        subject: 'Checking in on your progress ',
+                        text: Messege1
+                    }
+                    transport.sendMail(mailOption, (err, info) => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log('Email sent: ' + info.response);
+                        }
+                    })
+                } else if (req.body.absent == 2) {
+                    mailOption = {
+                        from: "ghanamaahmed@gmail.com",
+                        to: student.email,
+                        subject: 'Reminder about the importance of attendance ',
+                        text: Message2
+                    }
+                    transport.sendMail(mailOption, (err, info) => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log('Email sent: ' + info.response);
+                        }
+                    })
+                } else {
+                    mailOption = {
+                        from: "ghanamaahmed@gmail.com",
+                        to: student.email,
+                        subject: 'Concerns about your attendance and course enrollment',
+                        text: Message3
+                    }
+                    transport.sendMail(mailOption, (err, info) => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log('Email sent: ' + info.response);
+                        }
+                    })
+                }
+                res.json({
+                    res: true,
+                    mes: "succssful"
+                })
+            }
+        }
+
     }
 })
 module.exports = { teacherRouter }

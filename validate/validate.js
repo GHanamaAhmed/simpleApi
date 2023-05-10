@@ -55,7 +55,7 @@ var schemaJoinRoom = joi.object({
     type: joi.string().valid('Cour', 'Td', 'Tp'),
     specialist: joi.string(),
     code: joi.number(),
-    schoolYear: joi.string().valid('First licence', 'Seconde licence', 'Third licence',  'First master', 'Seconde master'),
+    schoolYear: joi.string().valid('First licence', 'Seconde licence', 'Third licence', 'First master', 'Seconde master'),
 })
 var schemaeditRoom = joi.object({
     email: joi.string().email().required(),
@@ -71,4 +71,10 @@ var schemaRemoveStudent = joi.object({
 var schemasps = joi.object({
     specialist: joi.array().required(),
 })
-module.exports = { schemaTeacher,schemasps, schemaRemoveStudent, schemaStudent, schemaSignin, schemaSpecialist, schemaauth, schemaJoinRoom, schemaeditRoom, schemaStudentUpdate }
+var schemaSendStudent = joi.object({
+    email: joi.string().email().required(),
+    password: joi.string().max(20).min(8).required(),
+    idStudent: joi.any().required(),
+    absent: joi.number().required(),
+})
+module.exports = { schemaTeacher,schemaSendStudent, schemasps, schemaRemoveStudent, schemaStudent, schemaSignin, schemaSpecialist, schemaauth, schemaJoinRoom, schemaeditRoom, schemaStudentUpdate }
