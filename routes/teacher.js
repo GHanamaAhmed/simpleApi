@@ -612,7 +612,7 @@ teacherRouter.post("/sendMessage", async (req, res) => {
                 mes: "Email or password not correct!"
             })
         } else {
-            const student = await Student.findOne({ id: req.body.idStudent })
+            const student = await Student.findById(req.body.idStudent)
             if (student == null) {
                 res.json({
                     res: false,
