@@ -588,16 +588,6 @@ teacherRouter.post("/getStudents", async (req, res) => {
                 all.push(e1)
             })
         })
-        const removeDuplicateObject = (arr) => {
-            const uniqueArray = arr.filter((value, index) => {
-              const _value = JSON.stringify(value);
-              return index === arr.findIndex(obj => {
-                return JSON.stringify(obj) === _value;
-              });
-            });
-            return uniqueArray
-          }
-        let data=removeDuplicateObject(all)
         res.json(
             {
                 res: true,
