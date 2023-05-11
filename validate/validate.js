@@ -82,5 +82,6 @@ var schemaSendToAllStudent = joi.object({
     email: joi.string().email().required(),
     password: joi.string().max(20).min(8).required(),
     student : joi.array().required(),
+    module: joi.string().required(),
 })
 module.exports = { schemaTeacher,schemaSendToAllStudent,schemaSendStudent, schemasps, schemaRemoveStudent, schemaStudent, schemaSignin, schemaSpecialist, schemaauth, schemaJoinRoom, schemaeditRoom, schemaStudentUpdate }
