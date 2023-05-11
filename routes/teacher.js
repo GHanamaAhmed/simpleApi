@@ -709,19 +709,23 @@ teacherRouter.post("/sendtoallstudents", async (req, res) => {
         })
     } else {
         var teacher = await Teacher.findOne({ email: req.body.email, password: req.body.password })
-        if (teacher == null) {
+        if (teacher != null) {
             res.json({
                 res: false,
                 mes: "Email or password not correct!"
             })
         } else {
+
             const st = req.body.student
-            let studentss = st.map(async e => {
+            console.log(st);
+            let studentss =await Promise.all(st.map(async e => {
+                let s = await Student.findById(e.id)
                 return {
                     absent: e.absent,
-                    st: await Student.findById(e.id)
+                    st: s
                 }
-            })
+            }))
+            console.log(studentss);
             let transport = nodemailer.createTransport({
                 service: "gmail",
                 auth: {
@@ -776,7 +780,7 @@ teacherRouter.post("/sendtoallstudents", async (req, res) => {
                             console.log('Email sent: ' + info.response);
                         }
                     })
-                }else{
+                } else {
                     let Message4 = `Dear ${student.st.lastname} ${student.st.firstname} , I am writing to inform you that you have been expelled from the ${req.body.module} course due to your continued absences. You have missed ${student.absent} classes , and your behavior is unacceptable. Attendance is mandatory, and your lack of commitment is not only disrespectful to me but also to your fellow students. Please be aware that this decision is final, and you will not be able to re-enroll in the course. I wish you the best of luck in your future endeavors. Sincerely,${teacher.lastname} ${teacher.firstname} Please dont reply to this email. you contact with your teacher by email: ${teacher.email}`;
                     mailOption = {
                         from: "ghanamaahmed@gmail.com",
@@ -791,7 +795,7 @@ teacherRouter.post("/sendtoallstudents", async (req, res) => {
                             console.log('Email sent: ' + info.response);
                         }
                     })
-                    
+
                 }
             })
             res.json({
