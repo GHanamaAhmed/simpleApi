@@ -623,6 +623,7 @@ teacherRouter.post("/sendMessage", async (req, res) => {
                 const Messege1 = `Dear ${student.lastname} ${student.firstname} , I hope this message finds you well. I noticed that you were absent from ${req.body.module} class recently, and I wanted to reach out and check in with you. If you have any questions or concerns about the course material, please don't hesitate to let me know. I am here to support you and help you succeed.Best regards,${teacher.lastname} ${teacher.firstname} Please dont reply to this email. you contact with your teacher by email: ${teacher.email}`
                 const Message2 = `Dear ${student.lastname} ${student.firstname} , I am writing to remind you of the importance of attending all classes regularly. Missing even one in the ${req.body.module} class  can have an impact on your academic performance and make it difficult to keep up with the ${req.body.module} course material. Please make every effort to attend all remaining classes and to catch up on any material you may have missed. Sincerely,${teacher.lastname} ${teacher.firstname} Please dont reply to this email. you contact with your teacher by email: ${teacher.email}`
                 const Message3 = `Dear ${student.lastname} ${student.firstname} , It has come to my attention that you have been absent ${req.body.absent} times from ${req.body.module} classes without any valid reason. Your frequent absences have not gone unnoticed, and I am disappointed to inform you that your behavior is unacceptable. Attendance is mandatory, and your lack of commitment is not only disrespectful to me but also to your fellow students. As a result of your continued absences, I am recommending your expulsion from the course. Please be aware that this decision is final, and you will not be able to re-enroll in the course. I wish you the best of luck in your future endeavors. Sincerely,${teacher.lastname} ${teacher.firstname} Please dont reply to this email. you contact with your teacher by email: ${teacher.email}`
+                const Message4 = `Dear ${student.lastname} ${student.firstname} , I am writing to inform you that you have been expelled from the ${req.body.module} course due to your continued absences. You have missed ${req.body.absent} classes , and your behavior is unacceptable. Attendance is mandatory, and your lack of commitment is not only disrespectful to me but also to your fellow students. Please be aware that this decision is final, and you will not be able to re-enroll in the course. I wish you the best of luck in your future endeavors. Sincerely,${teacher.lastname} ${teacher.firstname} Please dont reply to this email. you contact with your teacher by email: ${teacher.email}`;
                 let transport = nodemailer.createTransport({
                     service: "gmail",
                     auth: {
@@ -659,7 +660,7 @@ teacherRouter.post("/sendMessage", async (req, res) => {
                             console.log('Email sent: ' + info.response);
                         }
                     })
-                } else {
+                } else if (req.body.absent == 4 || req.body.absent == 3 ) {
                     mailOption = {
                         from: "ghanamaahmed@gmail.com",
                         to: student.email,
@@ -673,6 +674,21 @@ teacherRouter.post("/sendMessage", async (req, res) => {
                             console.log('Email sent: ' + info.response);
                         }
                     })
+                }else{
+                    mailOption = {
+                        from: "ghanamaahmed@gmail.com",
+                        to: student.email,
+                        subject: 'Concerns about your attendance and course enrollment',
+                        text: Message4
+                    }
+                    transport.sendMail(mailOption, (err, info) => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log('Email sent: ' + info.response);
+                        }
+                    })
+
                 }
                 res.json({
                     res: true,
