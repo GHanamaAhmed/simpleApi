@@ -47,6 +47,10 @@ var schemaSpecialist = joi.object({
 var schemaauth = joi.object({
     email: joi.string().email().required(),
 })
+var schemaauth2 = joi.object({
+    email: joi.string().email().required(),
+    code: joi.number().required(),
+})
 var schemaJoinRoom = joi.object({
     email: joi.string().email().required(),
     password: joi.string().max(20).min(8).required(),
@@ -84,4 +88,10 @@ var schemaSendToAllStudent = joi.object({
     student : joi.array().required(),
     module: joi.string().required(),
 })
-module.exports = { schemaTeacher,schemaSendToAllStudent,schemaSendStudent, schemasps, schemaRemoveStudent, schemaStudent, schemaSignin, schemaSpecialist, schemaauth, schemaJoinRoom, schemaeditRoom, schemaStudentUpdate }
+var shchemaResetPassword = joi.object({
+    email: joi.string().email().required(),
+    password: joi.string().max(20).min(8).required(),
+    rpassword: joi.string().max(20).min(8).required(),
+    code: joi.number().required(),
+})
+module.exports = { schemaTeacher,schemaauth2,shchemaResetPassword,schemaSendToAllStudent,schemaSendStudent, schemasps, schemaRemoveStudent, schemaStudent, schemaSignin, schemaSpecialist, schemaauth, schemaJoinRoom, schemaeditRoom, schemaStudentUpdate }

@@ -1,7 +1,7 @@
 const teacherRouter = require('express').Router();
 const e = require('express');
 const { Teacher, EmailVerification, Room, Session, Student, Notifications, Attendance, Specialist } = require('../database/database');
-const { schemaSignin, schemaTeacher, schemaSendStudent, schemaSendToAllStudent, schemasps, schemaauth, schemaJoinRoom, schemaeditRoom, schemaRemoveStudent } = require('../validate/validate');
+const { schemaSignin, schemaTeacher,schemaauth2, schemaSendStudent,shchemaResetPassword, schemaSendToAllStudent, schemasps, schemaauth, schemaJoinRoom, schemaeditRoom, schemaRemoveStudent } = require('../validate/validate');
 const nodemailer = require("nodemailer");
 //Sign up Teacher
 teacherRouter.post("/signup", async (req, res) => {
@@ -716,7 +716,7 @@ teacherRouter.post("/sendtoallstudents", async (req, res) => {
             })
         } else {
             const st = req.body.student
-            let studentss =await Promise.all(st.map(async e => {
+            let studentss = await Promise.all(st.map(async e => {
                 let s = await Student.findById(e.id)
                 return {
                     absent: e.absent,
@@ -801,12 +801,103 @@ teacherRouter.post("/sendtoallstudents", async (req, res) => {
             })
 
         }
+    }
+})
 
+teacherRouter.post("/forgetpassword", async (req, res) => {
+    const { error } = schemaauth2.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        try {
+            let finduser = await Teacher.find({ email: req.body.email })
+            if (finduser.length <= 0) {
+                res.json({
+                    res: false,
+                    mes: "Email not exist!"
+                })
+            } else {
+                let finemil = await EmailVerification.find({ email: req.body.email })
+                if (finemil.length > 0) {
+                    let auth = await EmailVerification.find({ email: req.body.email, code: req.body.code })
+                    if (auth.length > 0) {
+                        res.json({
+                            res: true,
+                            mes: "Succeeful",
+                        })
+                    } else {
+                        res.json({
+                            res: false,
+                            mes: "code not correct"
+                        })
+                    }
+                } else {
+                    res.json({
+                        res: false,
+                        mes: "you ignore auth"
+                    })
+                }
+            }
+        } catch (err) {
+            res.json({
+                res: false,
+                mes: err
+            })
+        }
+    }
+})
+teacherRouter.post("/resetPaswword", async (req, res) => {
+    const { value, error } = shchemaResetPassword.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
 
+    } else {
+        try {
+            let finduser = await Teacher.find({ email: req.body.email,password:req.body.password })
+            if (finduser.length < 0) {
+                res.json({
+                    res: false,
+                    mes: "Account does not exist!"
+                })
+            } else {
+                let finemil = await EmailVerification.find({ email: req.body.email })
+                if (finemil.length > 0) {
+                    let auth = await EmailVerification.find({ email: req.body.email, code: req.body.code })
+                    if (auth.length > 0) {
+                        Teacher.updateOne({ email: req.body.email }, { password: req.body.rpassword })
+                        await EmailVerification.deleteOne({ email: req.body.email })
+                        res.json({
+                            res: true,
+                            mes: "Succeeful",
+                        })
+                    } else {
+                        res.json({
+                            res: false,
+                            mes: "code not correct"
+                        })
+                    }
+                } else {
+                    res.json({
+                        res: false,
+                        mes: "you ignore auth"
+                    })
+                }
+
+            }
+        } catch (err) {
+            res.json({
+                res: false,
+                mes: err
+            })
+        }
     }
 
 })
-
-
 
 module.exports = { teacherRouter }

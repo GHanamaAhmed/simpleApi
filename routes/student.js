@@ -1,7 +1,7 @@
 const studentRouter = require('express').Router();
 const { Promise } = require('mongoose');
 const { Student, Teacher, EmailVerification, Session, Room, Attendance, Notifications } = require('../database/database');
-const { schemaSignin, schemaStudent, schemaTeacher, schemaauth, schemaJoinRoom, schemaStudentUpdate } = require('../validate/validate');
+const { schemaSignin, schemaStudent, schemaTeacher,schemaauth2, schemaauth, schemaJoinRoom, schemaStudentUpdate } = require('../validate/validate');
 const nodemailer = require("nodemailer");
 const { promises } = require('nodemailer/lib/xoauth2');
 //Sign up Student
@@ -512,4 +512,100 @@ studentRouter.get("/session/:idroom", async (req, res) => {
         }
     }
 })
+studentRouter.post("/forgetpassword", async (req, res) => {
+    const { error } = schemaauth2.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        try {
+            let finduser = await Student.find({ email: req.body.email })
+            if (finduser.length <= 0) {
+                res.json({
+                    res: false,
+                    mes: "Email not exist!"
+                })
+            } else {
+                let finemil = await EmailVerification.find({ email: req.body.email })
+                if (finemil.length > 0) {
+                    let auth = await EmailVerification.find({ email: req.body.email, code: req.body.code })
+                    if (auth.length > 0) {
+                        res.json({
+                            res: true,
+                            mes: "Succeeful",
+                        })
+                    } else {
+                        res.json({
+                            res: false,
+                            mes: "code not correct"
+                        })
+                    }
+                } else {
+                    res.json({
+                        res: false,
+                        mes: "you ignore auth"
+                    })
+                }
+            }
+        } catch (err) {
+            res.json({
+                res: false,
+                mes: err
+            })
+        }
+    }
+})
+studentRouter.post("/resetPaswword", async (req, res) => {
+    const { value, error } = shchemaResetPassword.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+
+    } else {
+        try {
+            let finduser = await Student.find({ email: req.body.email,password:req.body.password })
+            if (finduser.length < 0) {
+                res.json({
+                    res: false,
+                    mes: "Account does not exist!"
+                })
+            } else {
+                let finemil = await EmailVerification.find({ email: req.body.email })
+                if (finemil.length > 0) {
+                    let auth = await EmailVerification.find({ email: req.body.email, code: req.body.code })
+                    if (auth.length > 0) {
+                        Student.updateOne({ email: req.body.email }, { password: req.body.rpassword })
+                        await EmailVerification.deleteOne({ email: req.body.email })
+                        res.json({
+                            res: true,
+                            mes: "Succeeful",
+                        })
+                    } else {
+                        res.json({
+                            res: false,
+                            mes: "code not correct"
+                        })
+                    }
+                } else {
+                    res.json({
+                        res: false,
+                        mes: "you ignore auth"
+                    })
+                }
+
+            }
+        } catch (err) {
+            res.json({
+                res: false,
+                mes: err
+            })
+        }
+    }
+
+})
+
 module.exports = { studentRouter }
