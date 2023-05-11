@@ -709,15 +709,13 @@ teacherRouter.post("/sendtoallstudents", async (req, res) => {
         })
     } else {
         var teacher = await Teacher.findOne({ email: req.body.email, password: req.body.password })
-        if (teacher != null) {
+        if (teacher == null) {
             res.json({
                 res: false,
                 mes: "Email or password not correct!"
             })
         } else {
-
             const st = req.body.student
-            console.log(st);
             let studentss =await Promise.all(st.map(async e => {
                 let s = await Student.findById(e.id)
                 return {
@@ -725,7 +723,6 @@ teacherRouter.post("/sendtoallstudents", async (req, res) => {
                     st: s
                 }
             }))
-            console.log(studentss);
             let transport = nodemailer.createTransport({
                 service: "gmail",
                 auth: {
