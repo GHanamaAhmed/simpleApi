@@ -712,7 +712,7 @@ teacherRouter.post("/sendtoallstudents", async (req, res) => {
         if (teacher == null) {
             res.json({
                 res: false,
-                mes: "Email or password not correct!"
+                mes: "email or password is wrong"
             })
         } else {
             const st = req.body.student
