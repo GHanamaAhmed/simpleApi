@@ -708,7 +708,7 @@ teacherRouter.post("/sendtoallstudents", async (req, res) => {
             mes: error.message
         })
     } else {
-        const teacher = await Teacher.findOne({ email: req.body.email, password: req.body.password })
+        var teacher = await Teacher.findOne({ email: req.body.email, password: req.body.password })
         if (teacher == null) {
             res.json({
                 res: false,
