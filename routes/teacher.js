@@ -858,7 +858,7 @@ teacherRouter.post("/resetPaswword", async (req, res) => {
 
     } else {
         try {
-            let finduser = await Teacher.find({ email: req.body.email, password: req.body.password })
+            let finduser = await Teacher.find({ email: req.body.email})
             if (finduser.length < 0) {
                 res.json({
                     res: false,

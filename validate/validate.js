@@ -90,7 +90,6 @@ var schemaSendToAllStudent = joi.object({
 })
 var shchemaResetPassword = joi.object({
     email: joi.string().email().required(),
-    password: joi.string().max(20).min(8).required(),
     rpassword: joi.string().max(20).min(8).required(),
     code: joi.number().required(),
 })
