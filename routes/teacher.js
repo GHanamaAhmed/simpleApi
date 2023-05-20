@@ -1,7 +1,7 @@
 const teacherRouter = require('express').Router();
 const e = require('express');
 const { Teacher, EmailVerification, Room, Session, Student, Notifications, Attendance, Specialist } = require('../database/database');
-const { schemaSignin, schemaTeacher,schemaauth2, schemaSendStudent,shchemaResetPassword, schemaSendToAllStudent, schemasps, schemaauth, schemaJoinRoom, schemaeditRoom, schemaRemoveStudent } = require('../validate/validate');
+const { schemaSignin, schemaTeacher, schemaauth2, schemaSendStudent, shchemaResetPassword, schemaSendToAllStudent, schemasps, schemaauth, schemaJoinRoom, schemaeditRoom, schemaRemoveStudent } = require('../validate/validate');
 const nodemailer = require("nodemailer");
 //Sign up Teacher
 teacherRouter.post("/signup", async (req, res) => {
@@ -143,9 +143,8 @@ teacherRouter.post("/auth", async (req, res) => {
                 await user.save()
                 res.json({
                     res: true,
-                    mes: "send code" + code
+                    mes: "The code has been sent successfully"
                 })
-
             }
         } catch (err) {
             res.json({
@@ -859,7 +858,7 @@ teacherRouter.post("/resetPaswword", async (req, res) => {
 
     } else {
         try {
-            let finduser = await Teacher.find({ email: req.body.email,password:req.body.password })
+            let finduser = await Teacher.find({ email: req.body.email, password: req.body.password })
             if (finduser.length < 0) {
                 res.json({
                     res: false,
@@ -899,5 +898,62 @@ teacherRouter.post("/resetPaswword", async (req, res) => {
     }
 
 })
+teacherRouter.post("/authResetPassword", async (req, res) => {
+    const { value, error } = schemaauth.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
 
+    } else {
+        try {
+            let finduser = await Teacher.findOne({ email: req.body.email })
+            if (finduser==null) {
+                res.json({
+                    res: false,
+                    mes: "Email does't exsist!"
+                })
+            } else {
+                let transport = nodemailer.createTransport({
+                    service: "gmail",
+                    auth: {
+                        user: "ghanamaahmed@gmail.com",
+                        pass: "ebuzczrivdugpmua"
+                    }
+                })
+                let code = Math.floor(1000 + Math.random() * 9000);
+                let mailOption = {
+                    from: "ghanamaahmed@gmail.com",
+                    to: req.body.email,
+                    subject: 'Authentcation Code',
+                    text: 'Code : ' + code
+                }
+                transport.sendMail(mailOption, (err, info) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log('Email sent: ' + info.response);
+                    }
+                })
+                let userIsExist = EmailVerification.find({ email: req.body.email })
+                if ((await userIsExist).length > 0) {
+                    await EmailVerification.deleteOne({ email: req.body.email })
+                }
+                let user = new EmailVerification({ email: req.body.email, code: code })
+                await user.save()
+                res.json({
+                    res: true,
+                    mes: "The code has been sent successfully"
+                })
+            }
+        } catch (err) {
+            res.json({
+                res: false,
+                mes: err
+            })
+        }
+    }
+
+})
 module.exports = { teacherRouter }
