@@ -578,7 +578,7 @@ studentRouter.post("/resetPaswword", async (req, res) => {
                 if (finemil.length > 0) {
                     let auth = await EmailVerification.find({ email: req.body.email, code: req.body.code })
                     if (auth.length > 0) {
-                        Student.findOneAndUpdate({ email: req.body.email }, {$set:{password: req.body.rpassword } },{upsert:true})
+                        Student.findOneAndUpdate({ email: req.body.email }, {password: req.body.rpassword },{new:true,runValidators:true})
                         await EmailVerification.deleteOne({ email: req.body.email })
                         res.json({
                             res: true,
