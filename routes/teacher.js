@@ -196,7 +196,6 @@ teacherRouter.post("/reauth", async (req, res) => {
                 await EmailVerification.updateOne({ email: req.body.email }, { $set: { code: code } })
                 res.json({
                     res: true,
-                    mes: "resend code: " + code
                 })
 
             }

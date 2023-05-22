@@ -490,7 +490,7 @@ studentRouter.get("/session/:idroom", async (req, res) => {
                 let attandance = await Attendance.find({ idRoom: findRoom.id })
                 let students = await Promise.all(attandance.map(async e => {
                     let student = await Student.findById(e.idStudent)
-                    return { firstname: student.firstname, lastname: student.lastname, idStudent: student.id, specialist: student.specialist, sex: student.sex }
+                    return { firstname: student.firstname, lastname: student.lastname,email:student.email, idStudent: student.id, specialist: student.specialist, sex: student.sex }
                 }));
                 res.json(
                     {
