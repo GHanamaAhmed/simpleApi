@@ -90,13 +90,7 @@ const EmailVerification = mongoose.model("emailv", new mongoose.Schema(
         code: {
             type: Number,
             required: true
-        },
-        // createAt: {
-        //     type: Date,
-        //     default: Date.now,
-        //     expires:"2h",
-        //     index:true
-        // }
+        }
     }
 ))
 const Room = mongoose.model("room", new mongoose.Schema(
@@ -120,11 +114,10 @@ const Room = mongoose.model("room", new mongoose.Schema(
             type: String,
         },
         createAt: {
-            type: Date,
-            default: new Date().toLocaleString()
+            type: Date
         },
         schoolYear: {
-            type: String,
+            type: String
         },
         specialist:{
             type: String
@@ -141,12 +134,6 @@ const Session = mongoose.model("Session", new mongoose.Schema(
             type: Boolean,
             default: true
         },
-        // createAt: {
-        //     type: Date,
-        //     default: Date.now,
-        //     expires:"2h",
-        //     index:true
-        // }
     }
 ))
 const Attendance = mongoose.model("attendance", new mongoose.Schema(

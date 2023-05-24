@@ -277,7 +277,8 @@ teacherRouter.post("/createroom", async (req, res) => {
                         type: req.body.type || "undefine",
                         code: req.body.code,
                         schoolYear: req.body.schoolYear || "undefine",
-                        specialist: req.body.specialist || "undefine"
+                        specialist: req.body.specialist || "undefine",
+                        createAt:new Date().toLocaleString()
                     }
                 )
                 await room.save()
@@ -686,7 +687,6 @@ teacherRouter.post("/sendMessage", async (req, res) => {
                             console.log('Email sent: ' + info.response);
                         }
                     })
-
                 }
                 res.json({
                     res: true,
@@ -694,7 +694,6 @@ teacherRouter.post("/sendMessage", async (req, res) => {
                 })
             }
         }
-
     }
 })
 
