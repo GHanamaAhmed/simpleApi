@@ -93,4 +93,10 @@ var shchemaResetPassword = joi.object({
     rpassword: joi.string().max(20).min(8).required(),
     code: joi.number().required(),
 })
-module.exports = { schemaTeacher,schemaauth2,shchemaResetPassword,schemaSendToAllStudent,schemaSendStudent, schemasps, schemaRemoveStudent, schemaStudent, schemaSignin, schemaSpecialist, schemaauth, schemaJoinRoom, schemaeditRoom, schemaStudentUpdate }
+var shchemaRefrQrCode = joi.object({
+    email: joi.string().email().required(),
+    password: joi.string().max(20).min(8).required(),
+    idroom: joi.any().required(),  
+    qrcode: joi.string().required(),
+})
+module.exports = { shchemaRefrQrCode,schemaTeacher,schemaauth2,shchemaResetPassword,schemaSendToAllStudent,schemaSendStudent, schemasps, schemaRemoveStudent, schemaStudent, schemaSignin, schemaSpecialist, schemaauth, schemaJoinRoom, schemaeditRoom, schemaStudentUpdate }

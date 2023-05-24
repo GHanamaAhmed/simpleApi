@@ -1,7 +1,7 @@
 const teacherRouter = require('express').Router();
 const e = require('express');
 const { Teacher, EmailVerification, Room, Session, Student, Notifications, Attendance, Specialist } = require('../database/database');
-const { schemaSignin, schemaTeacher, schemaauth2, schemaSendStudent, shchemaResetPassword, schemaSendToAllStudent, schemasps, schemaauth, schemaJoinRoom, schemaeditRoom, schemaRemoveStudent } = require('../validate/validate');
+const { schemaSignin, schemaTeacher, shchemaRefrQrCode, schemaauth2, schemaSendStudent, shchemaResetPassword, schemaSendToAllStudent, schemasps, schemaauth, schemaJoinRoom, schemaeditRoom, schemaRemoveStudent } = require('../validate/validate');
 const nodemailer = require("nodemailer");
 //Sign up Teacher
 teacherRouter.post("/signup", async (req, res) => {
@@ -278,7 +278,7 @@ teacherRouter.post("/createroom", async (req, res) => {
                         code: req.body.code,
                         schoolYear: req.body.schoolYear || "undefine",
                         specialist: req.body.specialist || "undefine",
-                        createAt:new Date().toLocaleString()
+                        createAt: new Date().toLocaleString()
                     }
                 )
                 await room.save()
@@ -866,7 +866,7 @@ teacherRouter.post("/resetPaswword", async (req, res) => {
                 if (finemil.length > 0) {
                     let auth = await EmailVerification.find({ email: req.body.email, code: req.body.code })
                     if (auth.length > 0) {
-                       await Teacher.findOneAndUpdate({ email: req.body.email }, { $set: { password: req.body.rpassword } })
+                        await Teacher.findOneAndUpdate({ email: req.body.email }, { $set: { password: req.body.rpassword } })
                         await EmailVerification.deleteOne({ email: req.body.email })
                         res.json({
                             res: true,
@@ -952,5 +952,33 @@ teacherRouter.post("/authResetPassword", async (req, res) => {
         }
     }
 
+})
+teacherRouter.post("/refrQrcode", async (req, res) => {
+    const { error } = shchemaRefrQrCode.validate(req.body)
+    if (error) {
+        res.json({
+            res: false,
+            mes: error.message
+        })
+    } else {
+        let teacher = Teacher.findOne({ email: req.body.email, password: req.body.password })
+        if (teacher) {
+            let room = Room.findById(req.body.idRoom)
+            if (room) {
+               await Room.findByIdAndUpdate(req.body.idRoom, { $set: { qrCode: req.body.qrcode } })
+            } else {
+                res.json({
+                    res: false,
+                    mes: "room not found "
+                }).status(404)
+            }
+        } else {
+            res.json({
+                res: false,
+                mes: "check email or password"
+            })
+        }
+
+    }
 })
 module.exports = { teacherRouter }
