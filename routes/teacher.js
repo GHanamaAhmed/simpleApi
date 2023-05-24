@@ -966,6 +966,10 @@ teacherRouter.post("/refrQrcode", async (req, res) => {
             let room = Room.findById(req.body.idRoom)
             if (room) {
                await Room.findByIdAndUpdate(req.body.idRoom, { $set: { qrCode: req.body.qrcode } })
+               res.json({
+                res: true,
+                mes:"secesfull"
+               })
             } else {
                 res.json({
                     res: false,
