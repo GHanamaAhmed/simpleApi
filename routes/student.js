@@ -1,7 +1,7 @@
 const studentRouter = require('express').Router();
 const { Promise } = require('mongoose');
 const { Student, Teacher, EmailVerification, Session, Room, Attendance, Notifications } = require('../database/database');
-const { schemaSignin, schemaStudent, schemaTeacher,schemaauth2, schemaauth, schemaJoinRoom, schemaStudentUpdate } = require('../validate/validate');
+const { schemaSignin, schemaStudent, schemaTeacher,schemaauth2, schemaauth, schemaJoinRoom, schemaStudentUpdate, shchemaResetPassword } = require('../validate/validate');
 const nodemailer = require("nodemailer");
 const { promises } = require('nodemailer/lib/xoauth2');
 //Sign up Student
