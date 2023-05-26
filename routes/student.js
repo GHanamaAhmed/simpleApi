@@ -1,7 +1,7 @@
 const studentRouter = require('express').Router();
 const { Promise } = require('mongoose');
 const { Student, Teacher, EmailVerification, Session, Room, Attendance, Notifications } = require('../database/database');
-const { schemaSignin, schemaStudent, schemaTeacher,schemaauth2, schemaauth, schemaJoinRoom, schemaStudentUpdate, shchemaResetPassword } = require('../validate/validate');
+const { schemaSignin, schemaStudent, schemaTeacher, schemaauth2, schemaauth, schemaJoinRoom, schemaStudentUpdate, shchemaResetPassword } = require('../validate/validate');
 const nodemailer = require("nodemailer");
 const { promises } = require('nodemailer/lib/xoauth2');
 //Sign up Student
@@ -111,7 +111,7 @@ studentRouter.post("/update", async (req, res) => {
             if (finduser != null) {
                 let finduser1 = await Student.findOne({ email: req.body.email, password: req.body.password })
                 if (finduser1 != null) {
-                    finduser1 = await Student.findByIdAndUpdate(finduser1.id, { $set: { firstname: req.body.firstname, lastname: req.body.lastname, password: req.body.rpassword, department: req.body.department, faculte: req.body.faculte, specialist: req.body.specialist, year: req.body.year } })
+                    finduser1 = await Student.findByIdAndUpdate(finduser1.id, { $set: { firstname: req.body.firstname, lastname: req.body.lastname, password: req.body.rpassword, department: req.body.department, faculte: req.body.faculte, specialist: req.body.specialist, year: req.body.year } },{new:true})
                     res.json({
                         res: true,
                         mes: "Update succssful",
@@ -310,7 +310,7 @@ studentRouter.post("/joinroom", async (req, res) => {
                             await attandance.save()
                             const rooms = req.io.of('/rooms');
                             const students = req.io.of('/students');
-                            rooms.to(findSession.idRoom).emit('join', { firstname: findStudent.firstname, lastname: findStudent.lastname, idStudent: findStudent.id, specialist: findStudent.specialist, sex: findStudent.sex,email:findStudent.email });
+                            rooms.to(findSession.idRoom).emit('join', { firstname: findStudent.firstname, lastname: findStudent.lastname, idStudent: findStudent.id, specialist: findStudent.specialist, sex: findStudent.sex, email: findStudent.email });
                             students.to(findStudent.email).emit('add-r', findRoom)
                             res.json({
                                 res: true,
@@ -490,7 +490,7 @@ studentRouter.get("/session/:idroom", async (req, res) => {
                 let attandance = await Attendance.find({ idRoom: findRoom.id })
                 let students = await Promise.all(attandance.map(async e => {
                     let student = await Student.findById(e.idStudent)
-                    return { firstname: student.firstname, lastname: student.lastname,email:student.email, idStudent: student.id, specialist: student.specialist, sex: student.sex }
+                    return { firstname: student.firstname, lastname: student.lastname, email: student.email, idStudent: student.id, specialist: student.specialist, sex: student.sex }
                 }));
                 res.json(
                     {
@@ -578,7 +578,7 @@ studentRouter.post("/resetPaswword", async (req, res) => {
                 if (finemil.length > 0) {
                     let auth = await EmailVerification.find({ email: req.body.email, code: req.body.code })
                     if (auth.length > 0) {
-                       await Student.findOneAndUpdate({ email: req.body.email }, {$set:{password: req.body.rpassword } })
+                        await Student.findOneAndUpdate({ email: req.body.email }, { $set: { password: req.body.rpassword } })
                         await EmailVerification.deleteOne({ email: req.body.email })
                         res.json({
                             res: true,
