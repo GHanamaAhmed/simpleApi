@@ -118,7 +118,7 @@ teacherRouter.post("/auth", async (req, res) => {
                     service: "gmail",
                     auth: {
                         user: "qr.attend.system@gmail.com",
-                        pass: "jwbhunkoqihzxwit"
+                        pass: "ywbhunkoqihzxwit"
                     }
                 })
                 let code = Math.floor(1000 + Math.random() * 9000);
@@ -177,7 +177,7 @@ teacherRouter.post("/reauth", async (req, res) => {
                     service: "gmail",
                     auth: {
                         user: "qr.attend.system@gmail.com",
-                        pass: "jwbhunkoqihzxwit"
+                        pass: "ywbhunkoqihzxwit"
                     }
                 })
                 let mailOption = {
@@ -627,7 +627,7 @@ teacherRouter.post("/sendMessage", async (req, res) => {
                     service: "gmail",
                     auth: {
                         user: "qr.attend.system@gmail.com",
-                        pass: "jwbhunkoqihzxwit"
+                        pass: "ywbhunkoqihzxwit"
                     }
                 })
                 let mailOption
@@ -724,7 +724,7 @@ teacherRouter.post("/sendtoallstudents", async (req, res) => {
                 service: "gmail",
                 auth: {
                     user: "qr.attend.system@gmail.com",
-                    pass: "jwbhunkoqihzxwit"
+                    pass: "ywbhunkoqihzxwit"
                 }
             })
             let mailOption
@@ -916,7 +916,7 @@ teacherRouter.post("/authResetPassword", async (req, res) => {
                     service: "gmail",
                     auth: {
                         user: "qr.attend.system@gmail.com",
-                        pass: "jwbhunkoqihzxwit"
+                        pass: "ywbhunkoqihzxwit"
                     }
                 })
                 let code = Math.floor(1000 + Math.random() * 9000);
