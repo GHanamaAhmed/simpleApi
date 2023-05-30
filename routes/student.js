@@ -158,13 +158,13 @@ studentRouter.post("/auth", async (req, res) => {
                 let transport = nodemailer.createTransport({
                     service: "gmail",
                     auth: {
-                        user: "ghanamaahmed@gmail.com",
-                        pass: "ebuzczrivdugpmua"
+                        user: "qr.attend.system@gmail.com",
+                        pass: "jwbhunkoqihzxwit"
                     }
                 })
                 let code = Math.floor(1000 + Math.random() * 9000);
                 let mailOption = {
-                    from: "ghanamaahmed@gmail.com",
+                    from: "qr.attend.system@gmail.com",
                     to: req.body.email,
                     subject: 'Authentcation Code',
                     text: 'Code : ' + code
@@ -218,12 +218,12 @@ studentRouter.post("/reauth", async (req, res) => {
                 let transport = nodemailer.createTransport({
                     service: "gmail",
                     auth: {
-                        user: "ghanamaahmed@gmail.com",
-                        pass: "ebuzczrivdugpmua"
+                        user: "qr.attend.system@gmail.com",
+                        pass: "jwbhunkoqihzxwit"
                     }
                 })
                 let mailOption = {
-                    from: "ghanamaahmed@gmail.com",
+                    from: "qr.attend.system@gmail.com",
                     to: req.body.email,
                     subject: 'Authentcation Code',
                     text: 'Code : ' + code
@@ -626,13 +626,13 @@ studentRouter.post("/authResetPassword", async (req, res) => {
                 let transport = nodemailer.createTransport({
                     service: "gmail",
                     auth: {
-                        user: "ghanamaahmed@gmail.com",
-                        pass: "ebuzczrivdugpmua"
+                        user: "qr.attend.system@gmail.com",
+                        pass: "jwbhunkoqihzxwit"
                     }
                 })
                 let code = Math.floor(1000 + Math.random() * 9000);
                 let mailOption = {
-                    from: "ghanamaahmed@gmail.com",
+                    from: "qr.attend.system@gmail.com",
                     to: req.body.email,
                     subject: 'Authentcation Code',
                     text: 'Code : ' + code
