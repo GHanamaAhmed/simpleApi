@@ -3,9 +3,23 @@ const e = require('express');
 const { Teacher, EmailVerification, Room, Session, Student, Notifications, Attendance, Specialist } = require('../database/database');
 const { schemaSignin, schemaTeacher, shchemaRefrQrCode, schemaauth2, schemaSendStudent, shchemaResetPassword, schemaSendToAllStudent, schemasps, schemaauth, schemaJoinRoom, schemaeditRoom, schemaRemoveStudent } = require('../validate/validate');
 const nodemailer = require("nodemailer");
-const fs=require("fs")
+const fs = require("fs")
 const path = require('path');
-const signature=fs.readFileSync(path.join(process.cwd(),"signature.html"),"utf-8")
+const handlebars = require('handlebars');
+const signature = fs.readFileSync(path.join(process.cwd(), "signature.html"), "utf-8")
+const template = handlebars.compile(signature);
+const htmlToSend = (content) => {
+    let replacements = {
+        content: content
+    };
+    return template(replacements);
+}
+const email = (email) => {
+    return `<p style="margin: 1px;"><a href="mailto:${email}" target="_blank"
+    style="font-family: Arial, sans-serif; font-size: 13px; line-height: 17px; white-space: nowrap; color: rgb(0,123,255); font-weight: 700; text-decoration: none !important;"><span
+        style="font-family: Arial, sans-serif; font-size: 13px; line-height: 17px; white-space: nowrap; color: rgb(0,123,255); font-weight: 700; text-decoration: none !important;">${email}</span></a>
+</p>`
+}
 //Sign up Teacher
 teacherRouter.post("/signup", async (req, res) => {
     const { value, error } = schemaTeacher.validate(req.body)
@@ -130,7 +144,7 @@ teacherRouter.post("/auth", async (req, res) => {
                     to: req.body.email,
                     subject: 'Authentcation Code',
                     text: 'Code : ' + code,
-                    html:signature
+                    html: htmlToSend('Code : ' + code)
                 }
                 transport.sendMail(mailOption, (err, info) => {
                     if (err) {
@@ -189,7 +203,7 @@ teacherRouter.post("/reauth", async (req, res) => {
                     to: req.body.email,
                     subject: 'Authentcation Code',
                     text: 'Code : ' + code,
-                    html:signature
+                    html: htmlToSend('Code : ' + code)
                 }
                 transport.sendMail(mailOption, (err, info) => {
                     if (err) {
@@ -624,10 +638,10 @@ teacherRouter.post("/sendMessage", async (req, res) => {
                 })
             } else {
 
-                const Messege1 = `Dear ${student.lastname} ${student.firstname} , I hope this message finds you well. I noticed that you were absent from ${req.body.module} class recently, and I wanted to reach out and check in with you. If you have any questions or concerns about the course material, please don't hesitate to let me know. I am here to support you and help you succeed.Best regards,${teacher.lastname} ${teacher.firstname} Please dont reply to this email. you contact with your teacher by email: ${teacher.email}`
-                const Message2 = `Dear ${student.lastname} ${student.firstname} , I am writing to remind you of the importance of attending all classes regularly. Missing even one in the ${req.body.module} class  can have an impact on your academic performance and make it difficult to keep up with the ${req.body.module} course material. Please make every effort to attend all remaining classes and to catch up on any material you may have missed. Sincerely,${teacher.lastname} ${teacher.firstname} Please dont reply to this email. you contact with your teacher by email: ${teacher.email}`
-                const Message3 = `Dear ${student.lastname} ${student.firstname} , It has come to my attention that you have been absent ${req.body.absent} times from ${req.body.module} classes without any valid reason. Your frequent absences have not gone unnoticed, and I am disappointed to inform you that your behavior is unacceptable. Attendance is mandatory, and your lack of commitment is not only disrespectful to me but also to your fellow students. As a result of your continued absences, I am recommending your expulsion from the course. Please be aware that this decision is final, and you will not be able to re-enroll in the course. I wish you the best of luck in your future endeavors. Sincerely,${teacher.lastname} ${teacher.firstname} Please dont reply to this email. you contact with your teacher by email: ${teacher.email}`
-                const Message4 = `Dear ${student.lastname} ${student.firstname} , I am writing to inform you that you have been expelled from the ${req.body.module} course due to your continued absences. You have missed ${req.body.absent} classes , and your behavior is unacceptable. Attendance is mandatory, and your lack of commitment is not only disrespectful to me but also to your fellow students. Please be aware that this decision is final, and you will not be able to re-enroll in the course. I wish you the best of luck in your future endeavors. Sincerely,${teacher.lastname} ${teacher.firstname} Please dont reply to this email. you contact with your teacher by email: ${teacher.email}`;
+                const Messege1 = `Dear ${student.lastname} ${student.firstname} , I hope this message finds you well. I noticed that you were absent from ${req.body.module} class recently, and I wanted to reach out and check in with you. If you have any questions or concerns about the course material, please don't hesitate to let me know. I am here to support you and help you succeed.Best regards,${teacher.lastname} ${teacher.firstname} Please dont reply to this email. you contact with your teacher by email: ${email(teacher.email)}`
+                const Message2 = `Dear ${student.lastname} ${student.firstname} , I am writing to remind you of the importance of attending all classes regularly. Missing even one in the ${req.body.module} class  can have an impact on your academic performance and make it difficult to keep up with the ${req.body.module} course material. Please make every effort to attend all remaining classes and to catch up on any material you may have missed. Sincerely,${teacher.lastname} ${teacher.firstname} Please dont reply to this email. you contact with your teacher by email: ${email(teacher.email)}`
+                const Message3 = `Dear ${student.lastname} ${student.firstname} , It has come to my attention that you have been absent ${req.body.absent} times from ${req.body.module} classes without any valid reason. Your frequent absences have not gone unnoticed, and I am disappointed to inform you that your behavior is unacceptable. Attendance is mandatory, and your lack of commitment is not only disrespectful to me but also to your fellow students. As a result of your continued absences, I am recommending your expulsion from the course. Please be aware that this decision is final, and you will not be able to re-enroll in the course. I wish you the best of luck in your future endeavors. Sincerely,${teacher.lastname} ${teacher.firstname} Please dont reply to this email. you contact with your teacher by email: ${email(teacher.email)}`
+                const Message4 = `Dear ${student.lastname} ${student.firstname} , I am writing to inform you that you have been expelled from the ${req.body.module} course due to your continued absences. You have missed ${req.body.absent} classes , and your behavior is unacceptable. Attendance is mandatory, and your lack of commitment is not only disrespectful to me but also to your fellow students. Please be aware that this decision is final, and you will not be able to re-enroll in the course. I wish you the best of luck in your future endeavors. Sincerely,${teacher.lastname} ${teacher.firstname} Please dont reply to this email. you contact with your teacher by email: ${email(teacher.email)}`;
                 let transport = nodemailer.createTransport({
                     service: "gmail",
                     auth: {
@@ -642,7 +656,7 @@ teacherRouter.post("/sendMessage", async (req, res) => {
                         to: student.email,
                         subject: 'Checking in on your progress ',
                         text: Messege1,
-                        html:signature
+                        html: htmlToSend(Messege1)
                     }
                     transport.sendMail(mailOption, (err, info) => {
                         if (err) {
@@ -657,7 +671,7 @@ teacherRouter.post("/sendMessage", async (req, res) => {
                         to: student.email,
                         subject: 'Reminder about the importance of attendance ',
                         text: Message2,
-                        html:signature
+                        html: htmlToSend(Message2)
                     }
                     transport.sendMail(mailOption, (err, info) => {
                         if (err) {
@@ -672,7 +686,7 @@ teacherRouter.post("/sendMessage", async (req, res) => {
                         to: student.email,
                         subject: 'Concerns about your attendance and course enrollment',
                         text: Message3,
-                        html:signature
+                        html: htmlToSend(Message3)
                     }
                     transport.sendMail(mailOption, (err, info) => {
                         if (err) {
@@ -687,7 +701,7 @@ teacherRouter.post("/sendMessage", async (req, res) => {
                         to: student.email,
                         subject: 'Concerns about your attendance and course enrollment',
                         text: Message4,
-                        html:signature
+                        html: htmlToSend(Message4)
                     }
                     transport.sendMail(mailOption, (err, info) => {
                         if (err) {
@@ -738,14 +752,14 @@ teacherRouter.post("/sendtoallstudents", async (req, res) => {
             })
             let mailOption
             studentss.forEach(async (student) => {
-                let Messege1 = `Dear ${student.st.lastname} ${student.st.firstname} , I hope this message finds you well. I noticed that you were absent from class recently, and I wanted to reach out and check in with you. If you have any questions or concerns about the course material, please don't hesitate to let me know. I am here to support you and help you succeed.Best regards,${teacher.lastname} ${teacher.firstname} `
+                let Messege1 = `Dear ${student.st.lastname} ${student.st.firstname} , I hope this message finds you well. I noticed that you were absent from class recently, and I wanted to reach out and check in with you. If you have any questions or concerns about the course material, please don't hesitate to let me know. I am here to support you and help you succeed.Best regards,${teacher.lastname} ${teacher.firstname} Please dont reply to this email. you contact with your teacher by email: ${email(teacher.email)}`
                 if (student.absent == 1) {
                     mailOption = {
                         from: "qr.attend.system@gmail.com",
                         to: student.st.email,
                         subject: 'Checking in on your progress ',
                         text: Messege1,
-                        html:signature
+                        html: htmlToSend(Messege1)
                     }
                     transport.sendMail(mailOption, (err, info) => {
                         if (err) {
@@ -755,13 +769,13 @@ teacherRouter.post("/sendtoallstudents", async (req, res) => {
                         }
                     })
                 } else if (student.absent == 2) {
-                    let Message2 = `Dear ${student.st.lastname} ${student.st.firstname} , I am writing to remind you of the importance of attending all classes regularly. Missing even one class can have an impact on your academic performance and make it difficult to keep up with the course material. Please make every effort to attend all remaining classes and to catch up on any material you may have missed. Sincerely,${teacher.lastname} ${teacher.firstname}`
+                    let Message2 = `Dear ${student.st.lastname} ${student.st.firstname} , I am writing to remind you of the importance of attending all classes regularly. Missing even one class can have an impact on your academic performance and make it difficult to keep up with the course material. Please make every effort to attend all remaining classes and to catch up on any material you may have missed. Sincerely,${teacher.lastname} ${teacher.firstname} Please dont reply to this email. you contact with your teacher by email: ${email(teacher.email)}`
                     mailOption = {
                         from: "qr.attend.system@gmail.com",
                         to: student.st.email,
                         subject: 'Reminder about the importance of attendance ',
                         text: Message2,
-                        html:signature
+                        html: htmlToSend(Message2)
                     }
                     transport.sendMail(mailOption, (err, info) => {
                         if (err) {
@@ -771,13 +785,13 @@ teacherRouter.post("/sendtoallstudents", async (req, res) => {
                         }
                     })
                 } else if (student.absent == 4 || student.absent == 3) {
-                    let Message3 = `Dear ${student.st.lastname} ${student.st.firstname} , It has come to my attention that you have been absent from ${req.body.module} classes without any valid reason. Your frequent absences have not gone unnoticed, and I am disappointed to inform you that your behavior is unacceptable. Attendance is mandatory, and your lack of commitment is not only disrespectful to me but also to your fellow students. As a result of your continued absences, I am recommending your expulsion from the course. Please be aware that this decision is final, and you will not be able to re-enroll in the course. I wish you the best of luck in your future endeavors. Sincerely,${teacher.lastname} ${teacher.firstname}`
+                    let Message3 = `Dear ${student.st.lastname} ${student.st.firstname} , It has come to my attention that you have been absent from ${req.body.module} classes without any valid reason. Your frequent absences have not gone unnoticed, and I am disappointed to inform you that your behavior is unacceptable. Attendance is mandatory, and your lack of commitment is not only disrespectful to me but also to your fellow students. As a result of your continued absences, I am recommending your expulsion from the course. Please be aware that this decision is final, and you will not be able to re-enroll in the course. I wish you the best of luck in your future endeavors. Sincerely,${teacher.lastname} ${teacher.firstname} Please dont reply to this email. you contact with your teacher by email: ${email(teacher.email)}`
                     mailOption = {
                         from: "qr.attend.system@gmail.com",
                         to: student.st.email,
                         subject: 'Concerns about your attendance and course enrollment',
                         text: Message3,
-                        html:signature
+                        html: htmlToSend(Message3)
                     }
                     transport.sendMail(mailOption, (err, info) => {
                         if (err) {
@@ -793,7 +807,7 @@ teacherRouter.post("/sendtoallstudents", async (req, res) => {
                         to: student.st.email,
                         subject: 'Concerns about your attendance and course enrollment',
                         text: Message4,
-                        html:signature
+                        html: htmlToSend(Message4)
                     }
                     transport.sendMail(mailOption, (err, info) => {
                         if (err) {
@@ -938,7 +952,7 @@ teacherRouter.post("/authResetPassword", async (req, res) => {
                     to: req.body.email,
                     subject: 'Authentcation Code',
                     text: 'Code : ' + code,
-                    html:signature
+                    html: htmlToSend('Code : ' + code)
                 }
                 transport.sendMail(mailOption, (err, info) => {
                     if (err) {
@@ -979,11 +993,11 @@ teacherRouter.post("/refrQrcode", async (req, res) => {
         if (teacher) {
             let room = Room.findById(req.body.idRoom)
             if (room) {
-               await Room.findByIdAndUpdate(req.body.idRoom, { $set: { qrCode: req.body.qrcode } })
-               res.json({
-                res: true,
-                mes:"secesfull"
-               })
+                await Room.findByIdAndUpdate(req.body.idRoom, { $set: { qrCode: req.body.qrcode } })
+                res.json({
+                    res: true,
+                    mes: "secesfull"
+                })
             } else {
                 res.json({
                     res: false,

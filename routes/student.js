@@ -6,7 +6,15 @@ const nodemailer = require("nodemailer");
 const { promises } = require('nodemailer/lib/xoauth2');
 const fs=require("fs")
 const path = require('path');
+const handlebars = require('handlebars');
 const signature=fs.readFileSync(path.join(process.cwd(),"signature.html"),"utf-8")
+const template = handlebars.compile(signature);
+const htmlToSend=(content)=>{
+    let replacements = {
+        content: content
+    };
+    return template(replacements);
+}
 //Sign up Student
 studentRouter.post("/signup", async (req, res) => {
     const { value, error } = schemaStudent.validate(req.body)
@@ -171,7 +179,7 @@ studentRouter.post("/auth", async (req, res) => {
                     to: req.body.email,
                     subject: 'Authentcation Code',
                     text: 'Code : ' + code,
-                    html:signature
+                    html:htmlToSend('Code : ' + code)
                 }
                 transport.sendMail(mailOption, (err, info) => {
                     if (err) {
@@ -231,7 +239,7 @@ studentRouter.post("/reauth", async (req, res) => {
                     to: req.body.email,
                     subject: 'Authentcation Code',
                     text: 'Code : ' + code,
-                    html:signature
+                    html:htmlToSend('Code : ' + code)
                 }
                 transport.sendMail(mailOption, (err, info) => {
                     if (err) {
@@ -641,7 +649,7 @@ studentRouter.post("/authResetPassword", async (req, res) => {
                     to: req.body.email,
                     subject: 'Authentcation Code',
                     text: 'Code : ' + code,
-                    html:signature
+                    html:htmlToSend('Code : ' + code)
                 }
                 transport.sendMail(mailOption, (err, info) => {
                     if (err) {
