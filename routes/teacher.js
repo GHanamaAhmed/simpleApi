@@ -3,6 +3,9 @@ const e = require('express');
 const { Teacher, EmailVerification, Room, Session, Student, Notifications, Attendance, Specialist } = require('../database/database');
 const { schemaSignin, schemaTeacher, shchemaRefrQrCode, schemaauth2, schemaSendStudent, shchemaResetPassword, schemaSendToAllStudent, schemasps, schemaauth, schemaJoinRoom, schemaeditRoom, schemaRemoveStudent } = require('../validate/validate');
 const nodemailer = require("nodemailer");
+const fs=require("fs")
+const path = require('path');
+const signature=fs.readFileSync(path.join(process.cwd(),"signature.html"),"utf-8")
 //Sign up Teacher
 teacherRouter.post("/signup", async (req, res) => {
     const { value, error } = schemaTeacher.validate(req.body)
@@ -126,7 +129,8 @@ teacherRouter.post("/auth", async (req, res) => {
                     from: "qr.attend.system@gmail.com",
                     to: req.body.email,
                     subject: 'Authentcation Code',
-                    text: 'Code : ' + code
+                    text: 'Code : ' + code,
+                    html:signature
                 }
                 transport.sendMail(mailOption, (err, info) => {
                     if (err) {
@@ -184,7 +188,8 @@ teacherRouter.post("/reauth", async (req, res) => {
                     from: "qr.attend.system@gmail.com",
                     to: req.body.email,
                     subject: 'Authentcation Code',
-                    text: 'Code : ' + code
+                    text: 'Code : ' + code,
+                    html:signature
                 }
                 transport.sendMail(mailOption, (err, info) => {
                     if (err) {
@@ -636,7 +641,8 @@ teacherRouter.post("/sendMessage", async (req, res) => {
                         from: "qr.attend.system@gmail.com",
                         to: student.email,
                         subject: 'Checking in on your progress ',
-                        text: Messege1
+                        text: Messege1,
+                        html:signature
                     }
                     transport.sendMail(mailOption, (err, info) => {
                         if (err) {
@@ -650,7 +656,8 @@ teacherRouter.post("/sendMessage", async (req, res) => {
                         from: "qr.attend.system@gmail.com",
                         to: student.email,
                         subject: 'Reminder about the importance of attendance ',
-                        text: Message2
+                        text: Message2,
+                        html:signature
                     }
                     transport.sendMail(mailOption, (err, info) => {
                         if (err) {
@@ -664,7 +671,8 @@ teacherRouter.post("/sendMessage", async (req, res) => {
                         from: "qr.attend.system@gmail.com",
                         to: student.email,
                         subject: 'Concerns about your attendance and course enrollment',
-                        text: Message3
+                        text: Message3,
+                        html:signature
                     }
                     transport.sendMail(mailOption, (err, info) => {
                         if (err) {
@@ -678,7 +686,8 @@ teacherRouter.post("/sendMessage", async (req, res) => {
                         from: "qr.attend.system@gmail.com",
                         to: student.email,
                         subject: 'Concerns about your attendance and course enrollment',
-                        text: Message4
+                        text: Message4,
+                        html:signature
                     }
                     transport.sendMail(mailOption, (err, info) => {
                         if (err) {
@@ -735,7 +744,8 @@ teacherRouter.post("/sendtoallstudents", async (req, res) => {
                         from: "qr.attend.system@gmail.com",
                         to: student.st.email,
                         subject: 'Checking in on your progress ',
-                        text: Messege1
+                        text: Messege1,
+                        html:signature
                     }
                     transport.sendMail(mailOption, (err, info) => {
                         if (err) {
@@ -750,7 +760,8 @@ teacherRouter.post("/sendtoallstudents", async (req, res) => {
                         from: "qr.attend.system@gmail.com",
                         to: student.st.email,
                         subject: 'Reminder about the importance of attendance ',
-                        text: Message2
+                        text: Message2,
+                        html:signature
                     }
                     transport.sendMail(mailOption, (err, info) => {
                         if (err) {
@@ -765,7 +776,8 @@ teacherRouter.post("/sendtoallstudents", async (req, res) => {
                         from: "qr.attend.system@gmail.com",
                         to: student.st.email,
                         subject: 'Concerns about your attendance and course enrollment',
-                        text: Message3
+                        text: Message3,
+                        html:signature
                     }
                     transport.sendMail(mailOption, (err, info) => {
                         if (err) {
@@ -780,7 +792,8 @@ teacherRouter.post("/sendtoallstudents", async (req, res) => {
                         from: "qr.attend.system@gmail.com",
                         to: student.st.email,
                         subject: 'Concerns about your attendance and course enrollment',
-                        text: Message4
+                        text: Message4,
+                        html:signature
                     }
                     transport.sendMail(mailOption, (err, info) => {
                         if (err) {
@@ -924,7 +937,8 @@ teacherRouter.post("/authResetPassword", async (req, res) => {
                     from: "qr.attend.system@gmail.com",
                     to: req.body.email,
                     subject: 'Authentcation Code',
-                    text: 'Code : ' + code
+                    text: 'Code : ' + code,
+                    html:signature
                 }
                 transport.sendMail(mailOption, (err, info) => {
                     if (err) {
