@@ -15,10 +15,7 @@ const htmlToSend = (content) => {
     return template(replacements);
 }
 const email = (email) => {
-    return `<p style="margin: 1px;"><a href="mailto:${email}" target="_blank"
-    style="font-family: Arial, sans-serif; font-size: 13px; line-height: 17px; white-space: nowrap; color: rgb(0,123,255); font-weight: 700; text-decoration: none !important;"><span
-        style="font-family: Arial, sans-serif; font-size: 13px; line-height: 17px; white-space: nowrap; color: rgb(0,123,255); font-weight: 700; text-decoration: none !important;">${email}</span></a>
-</p>`
+    return email
 }
 //Sign up Teacher
 teacherRouter.post("/signup", async (req, res) => {
