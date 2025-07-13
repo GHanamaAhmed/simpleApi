@@ -45,8 +45,8 @@ jobs:
             echo "Restoring original remote URL..."
             git remote set-url origin "${PUBLIC_REPO}"
 
-            echo "Running docker-compose..."
-            docker-compose up -d --build --remove-orphans
+            echo "Running docker compose..."
+            docker compose up -d --build --remove-orphans
 
             echo "Cleaning up old images..."
             docker image prune -f
