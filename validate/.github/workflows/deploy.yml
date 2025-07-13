@@ -1,0 +1,56 @@
+name: Students Attendance System CI/CD Pipeline
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chekout Code
+        uses: actions/checkout@v4
+      - name: Ssh into VPS
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: linuxserver.io
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: ${{ secrets.VPS_PORT || '22' }}
+          script: |
+            PUBLIC_REPO="https://github.com/GHanamaAhmed/simpleApi.git"
+            PRIVATE_REPO="https://${{secrets.GH_TOKEN}}@github.com/GHanamaAhmed/simpleApi.git"
+            APP_DIR=~/simpleApi
+            BRANCH=main
+            echo "Starting deployment to VPS..."
+            echo "APP_DIR is: ${APP_DIR}"
+            if [ ! -d "${APP_DIR}/.git" ]; then
+                echo "Cloning repository..."
+                git clone --branch "${BRANCH}" "${PRIVATE_REPO}" "${APP_DIR}"
+            fi
+
+            echo "Changing directory to ${APP_DIR}"
+            cd "${APP_DIR}"
+
+            echo "Temporarily setting remote with token..."
+            git remote set-url origin "${PRIVATE_REPO}"
+            git remote -v  # 🔍 Show current remotes
+
+            echo "Git operations..."
+            git fetch origin "${BRANCH}"
+            git reset --hard "origin/${BRANCH}"
+            git pull origin "${BRANCH}"
+
+            echo "Restoring original remote URL..."
+            git remote set-url origin "${PUBLIC_REPO}"
+
+            echo "Running docker-compose..."
+            docker-compose up -d --build --remove-orphans
+
+            echo "Cleaning up old images..."
+            docker image prune -f
+
+            echo "Deployment finished at $(date)"
+            date > "${APP_DIR}/.last_deploy"
+            echo "Deployment logs saved to ${APP_DIR}/.last_deploy"
+
+
