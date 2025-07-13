@@ -16,7 +16,9 @@ jobs:
           username: ${{ secrets.VPS_USERNAME }}
           password: ${{ secrets.VPS_PASSWORD }}
           port: ${{ secrets.VPS_PORT || '22' }}
+          script_stop: true
           script: |
+            set -e
             PUBLIC_REPO="https://github.com/GHanamaAhmed/simpleApi.git"
             PRIVATE_REPO="https://${{secrets.GH_TOKEN}}@github.com/GHanamaAhmed/simpleApi.git"
             APP_DIR=~/simpleApi
